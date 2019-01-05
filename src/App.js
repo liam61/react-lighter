@@ -1,20 +1,16 @@
 import React from 'react'
 import { hot } from 'react-hot-loader'
 import Hello from './components/Hello'
-// import asyncLoad from './components/asyncLoad'
 
-import removeIcon from './assets/remove.svg'
+import addIcon from './assets/add.svg'
 
-import './index.css'
-import './index.less'
-
-// const Hello = asyncLoad(() => import('./components/Hello'), { num: 1 })
+import './index.less' // 记得修改测试的样式
 
 const App = () => (
   <div>
     <div className="div">Hello! This is a div from App</div>
-    <img src={removeIcon} alt="remove-icon" />
-    <Hello num={1} />
+    <img src={addIcon} alt="add-icon" />
+    <Hello name="lawler" />
   </div>
 )
 

@@ -1,17 +1,11 @@
 import React from 'react'
 import { render } from 'react-dom'
-import App from './App'
+import AppHot from './AppHot'
 
 const root = document.getElementById('root')
 
 function renderAppToContainer() {
-  render(<App />, root)
+  render(<AppHot />, root)
 }
 
 renderAppToContainer()
-
-// if (module.hot) {
-//   module.hot.accept('./App.js', () => {
-//     renderAppToContainer()
-//   })
-// }

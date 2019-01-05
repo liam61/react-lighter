@@ -1,15 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
-// import asyncLoad from '../asyncLoad'
-
 import './styles'
-
-// const My = asyncLoad(() => import('../My'))
 
 class Hello extends PureComponent {
   static propTypes = {
-    num: PropTypes.number.isRequired
+    name: PropTypes.string.isRequired
   }
 
   state = {
@@ -22,16 +18,15 @@ class Hello extends PureComponent {
   }
 
   render() {
-    console.log(this.props)
-    const { num } = this.props
+    const { name } = this.props
     const { count } = this.state
     return (
       <div>
         <h1>This is from Hello component.</h1>
         <h2 className="h2">this is h2</h2>
-        <div className="num">
-          the num is
-          {num}
+        <div className="name">
+          my name is
+          {name}
         </div>
         <button className="btn" type="button" onClick={this.handleClick}>
           the count

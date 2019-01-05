@@ -17,14 +17,63 @@ module.exports = ({
   templateTitle,
   jsPath = 'src',
   cssPath,
+  needsCssInHtml,
   assetsPath,
   copyConfig,
   dllFiles
 }) => {
   const env = process.env.NODE_ENV
-  console.log('env', env)
   const dllWebpack = require(resolve(`${outputPath}/react.manifest.json`))
-  return {
+  const plugins = [
+    new HtmlWebpackPlugin({
+      template: resolve(templateFile),
+      filename: 'index.html',
+      title: templateTitle,
+      minify:
+        env === 'development'
+          ? null
+          : {
+            removeAttributeQuotes: true,
+            collapseWhitespace: true
+          }
+      // favicon: './favicon.ico',
+    }),
+    new webpack.BannerPlugin('created by lawler'),
+    new ExtractTextWebpackPlugin({
+      filename: `${cssPath}/index.[hash:8].css`,
+      disable: needsCssInHtml // 只有为 false 时才会去除无用 css
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: dllWebpack
+    }),
+    new AddAssetHtmlPlugin({
+      filepath: resolve(`${outputPath}/*.dll.js`),
+      includeSourcemap: false
+    }),
+    new CleanWebpackPlugin([resolve(outputPath)], {
+      root: process.cwd(),
+      exclude: dllFiles
+    }),
+    new HappyPack({
+      id: 'babel', // 上面 loader? 后面指定的 id
+      loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
+      threadPool: happyThreadPool,
+      verbose: true
+    })
+  ]
+
+  if (copyConfig && copyConfig.fromPath && copyConfig.toPath) {
+    plugins.push(
+      new CopyWebpackPlugin([
+        {
+          from: resolve(copyConfig.fromPath),
+          to: resolve(copyConfig.toPath) // 找到 dist 目录下的 docs，并放进去
+        }
+      ])
+    )
+  }
+
+  const baseConfig = {
     entry: ['@babel/polyfill', resolve(entryFile)],
     output: {
       filename: '[name].[hash:8].js',
@@ -146,49 +195,9 @@ module.exports = ({
       runtimeChunk: {
         name: 'runtime'
       }
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: resolve(templateFile),
-        filename: 'index.html',
-        title: templateTitle,
-        minify:
-          env === 'development'
-            ? null
-            : {
-              removeAttributeQuotes: true,
-              collapseWhitespace: true
-            }
-        // favicon: './favicon.ico',
-      }),
-      new webpack.BannerPlugin('created by lawler'),
-      new CopyWebpackPlugin([
-        {
-          from: resolve(copyConfig.copyPath),
-          to: resolve(copyConfig.toPath) // 找到 dist 目录下的 docs，并放进去
-        }
-      ]),
-      new ExtractTextWebpackPlugin({
-        filename: `${cssPath}/index.[hash:8].css`
-        // disable: env === 'production' // 只有为 false 时 去除无用 css 才有效？
-      }),
-      new webpack.DllReferencePlugin({
-        manifest: dllWebpack
-      }),
-      new AddAssetHtmlPlugin({
-        filepath: resolve(`${outputPath}/*.dll.js`),
-        includeSourcemap: false
-      }),
-      new CleanWebpackPlugin([resolve(outputPath)], {
-        root: process.cwd(),
-        exclude: dllFiles
-      }),
-      new HappyPack({
-        id: 'babel', // 上面 loader? 后面指定的 id
-        loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
-        threadPool: happyThreadPool,
-        verbose: true
-      })
-    ]
+    }
   }
+
+  baseConfig.plugins = plugins
+  return baseConfig
 }
