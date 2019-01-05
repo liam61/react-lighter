@@ -2,7 +2,10 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const PurifycssWebpack = require('purifycss-webpack') // 去除没引用到的样式，必须在 html-webpack-plugin 后引用
+// const PurgecssPlugin = require('purgecss-webpack-plugin') // no work ?
+const glob = require('glob-all')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const HappyPack = require('happypack')
 const os = require('os')
@@ -11,13 +14,15 @@ const { resolve } = require('./utils')
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length }) // 根据系统的内核数量指定线程池个数
 
 module.exports = ({
+  entryDir,
   entryFile,
   outputPath,
   templateFile,
   templateTitle,
-  jsPath = 'src',
+  author,
   cssPath,
-  needsCssInHtml,
+  purifycssFile,
+  usrCssExtract,
   assetsPath,
   copyConfig,
   dllFiles
@@ -29,20 +34,13 @@ module.exports = ({
       template: resolve(templateFile),
       filename: 'index.html',
       title: templateTitle,
-      minify:
-        env === 'development'
-          ? null
-          : {
-            removeAttributeQuotes: true,
-            collapseWhitespace: true
-          }
+      minify: env === 'development' ? null : {
+        removeAttributeQuotes: true,
+        collapseWhitespace: true
+      }
       // favicon: './favicon.ico',
     }),
-    new webpack.BannerPlugin('created by lawler'),
-    new ExtractTextWebpackPlugin({
-      filename: `${cssPath}/index.[hash:8].css`,
-      disable: needsCssInHtml // 只有为 false 时才会去除无用 css
-    }),
+    new webpack.BannerPlugin(`created by ${author}`),
     new webpack.DllReferencePlugin({
       manifest: dllWebpack
     }),
@@ -50,19 +48,31 @@ module.exports = ({
       filepath: resolve(`${outputPath}/*.dll.js`),
       includeSourcemap: false
     }),
-    new CleanWebpackPlugin([resolve(outputPath)], {
-      root: process.cwd(),
-      exclude: dllFiles
+    new PurifycssWebpack({
+      paths: glob.sync(purifycssFile.map(url => resolve(url))),
+      minimize: true
+    }),
+    new MiniCssExtractPlugin({
+      filename: `${cssPath}/main.[hash:8].css`
+      // filename: `${cssPath}/[name].[hash:8].css`
+      // chunkFilename: "[id].css"
     }),
     new HappyPack({
-      id: 'babel', // 上面 loader? 后面指定的 id
+      id: 'babel', // loader 中指定的 id
       loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
       threadPool: happyThreadPool,
       verbose: true
+    }),
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map'
+    }),
+    new CleanWebpackPlugin([resolve(outputPath)], {
+      root: process.cwd(),
+      exclude: dllFiles
     })
   ]
 
-  if (copyConfig && copyConfig.fromPath && copyConfig.toPath) {
+  if (copyConfig.needsCopy) {
     plugins.push(
       new CopyWebpackPlugin([
         {
@@ -73,12 +83,23 @@ module.exports = ({
     )
   }
 
+  const assetOptions = {
+    limit: 10240,
+    name: `${assetsPath}/[name].[ext]`,
+    publicPath: '../'
+  }
+
   const baseConfig = {
     entry: ['@babel/polyfill', resolve(entryFile)],
     output: {
       filename: '[name].[hash:8].js',
-      path: resolve(outputPath) // 输出路径，必须是绝对路径
+      path: resolve(outputPath)
     },
+    mode: env,
+    devtool:
+      env === 'development'
+        ? 'cheap-module-eval-source-map'
+        : 'cheap-module-source-map',
     module: {
       rules: [
         {
@@ -91,85 +112,71 @@ module.exports = ({
         },
         {
           test: /(\.js|\.jsx)$/,
-          use: 'happypack/loader?id=babel',
+          use: ['happypack/loader?id=babel'],
           exclude: /node_modules/,
-          include: resolve(jsPath)
+          include: resolve(entryDir)
         },
         {
           test: /\.css$/,
-          use: ExtractTextWebpackPlugin.extract({
-            fallback: 'style-loader', // 如果该插件不生效，则用 style-loader 处理
-            use: ['css-loader', 'postcss-loader']
-          })
+          use: [
+            usrCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            'postcss-loader'
+          ]
         },
         {
           test: /\.less$/,
-          use: ExtractTextWebpackPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              'css-loader',
-              {
-                loader: 'less-loader',
-                options: {
-                  javascriptEnabled: true,
-                  sourceMap: true
-                }
-              },
-              'postcss-loader'
-            ]
-          })
+          use: [
+            usrCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            'postcss-loader',
+            {
+              loader: 'less-loader',
+              options: {
+                javascriptEnabled: true,
+                sourceMap: true
+              }
+            }
+          ]
         },
         {
           test: /\.scss$/,
-          use: ExtractTextWebpackPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              'css-loader',
-              {
-                loader: 'less-loader',
-                options: {
-                  javascriptEnabled: true,
-                  sourceMap: true
-                }
-              },
-              'postcss-loader'
-            ]
-          })
+          use: [
+            usrCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            'postcss-loader',
+            {
+              loader: 'scss-loader',
+              options: {
+                javascriptEnabled: true,
+                sourceMap: true
+              }
+            }
+          ]
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           loader: 'url-loader',
-          options: {
-            limit: 10240,
-            minetype: 'image/svg+xml',
-            name: `${assetsPath}/[name].[ext]`,
-            publicPath: '../'
-          }
+          options: Object.assign({}, assetOptions, {
+            minetype: 'image/svg+xml'
+          })
         },
         {
           test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/i,
           loader: 'url-loader',
-          options: {
-            limit: 10240,
-            name: `${assetsPath}/[name].[ext]`,
-            publicPath: '../'
-          }
+          options: assetOptions
         },
         {
           test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
           loader: 'url-loader',
-          options: {
-            limit: 10240,
-            name: `${assetsPath}/[name].[ext]`,
-            publicPath: '../'
-          }
+          options: assetOptions
         }
       ]
       // 'noParse': /jquery/
     },
     resolve: {
       extensions: ['.js', '.jsx', '.css', '.less', 'scss'],
-      modules: [resolve(jsPath), resolve('node_modules')],
+      modules: [resolve(entryDir), resolve('node_modules')],
       alias: {}
     },
     optimization: {
@@ -183,7 +190,6 @@ module.exports = ({
             minSize: 0
           },
           vendor: {
-            // 将第三方模块提取出来
             test: /node_modules/,
             chunks: 'initial',
             name: 'vendor',
@@ -198,6 +204,5 @@ module.exports = ({
     }
   }
 
-  baseConfig.plugins = plugins
-  return baseConfig
+  return Object.assign(baseConfig, { plugins })
 }

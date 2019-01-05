@@ -1,10 +1,9 @@
 import React from 'react'
-import { hot } from 'react-hot-loader'
-import Hello from './components/Hello'
+import Hello from './components/Hello/loadable'
 
 import addIcon from './assets/add.svg'
 
-import './index.less' // 记得修改测试的样式
+import './index.less' // 记得修改测试样式
 
 const App = () => (
   <div>
@@ -14,4 +13,4 @@ const App = () => (
   </div>
 )
 
-export default hot(module)(App)
+export default App

@@ -1,13 +1,17 @@
+const { main, name, author } = require('../package.json')
+
 const outputPath = 'dist'
+
+const entryDir = 'src'
 
 // 必要参数
 const baseOptions = {
-  entryFile: 'src/index.js',
-  outputPath,
-  templateFile: 'src/index.tmpl.html',
-  templateTitle: 'init-project',
+  entryFile: main,
+  templateFile: `${entryDir}/index.tmpl.html`,
+  templateTitle: name,
+  author,
   cssPath: 'styles',
-  purifycssFile: ['src/*.html', 'src/**/*.js'],
+  purifycssFile: [`${entryDir}/*.html`, `${entryDir}/**/*.js`],
   assetsPath: 'assets',
   moduleToDll: {
     react: ['react', 'react-dom', 'react-router-dom']
@@ -17,12 +21,15 @@ const baseOptions = {
 
 // 可选参数
 const extraOptions = {
-  needsCssInHtml: false, // 打包时是否将 css 放入 html（选择 true 则不能去掉不用的 css 代码）
-  copyConfig: null // 是否有不需要处理，直接拷贝的文件
-  // copyConfig: {
-  //   fromPath: 'src/docs',
-  //   toPath: `${outputPath}/docs`
-  // },
+  // 是否抽离出 css
+  // 选择 true 在开发模式中 react-hot-loader 不能热加载抽离出去的 css
+  // 选择 false purifycss-webpack 不能去除无用的 css
+  usrCssExtract: true,
+  copyConfig: { // 是否有不需要处理，直接拷贝的文件
+    needsCopy: true,
+    fromPath: `${entryDir}/docs`,
+    toPath: `${outputPath}/docs`
+  }
 }
 
-module.exports = Object.assign(baseOptions, extraOptions)
+module.exports = Object.assign( baseOptions, { outputPath, entryDir }, extraOptions)

@@ -1,10 +1,6 @@
-const webpack = require('webpack')
+// const webpack = require('webpack')
 const merge = require('webpack-merge')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
-const PurifycssWebpack = require('purifycss-webpack') // 去除没引用到的样式，必须在 html-webpack-plugin 后面引用
-// const PurgecssPlugin = require('purgecss-webpack-plugin') // no work ?
-const glob = require('glob-all')
-const { resolve } = require('./utils')
 const options = require('./options')
 const getBaseConfig = require('./webpack.base.config')
 
@@ -12,8 +8,6 @@ process.env.NODE_ENV = 'production'
 
 function getProdConfig(opts) {
   return merge(getBaseConfig(opts), {
-    mode: 'production',
-    devtool: 'cheap-module-source-map',
     plugins: [
       new ParallelUglifyPlugin({
         sourceMap: true,
@@ -30,13 +24,6 @@ function getProdConfig(opts) {
             reduce_vars: true
           }
         }
-      }),
-      new PurifycssWebpack({
-        paths: glob.sync(opts.purifycssFile.map(url => resolve(url))),
-        minimize: true
-      }),
-      new webpack.SourceMapDevToolPlugin({
-        filename: '[file].map'
       })
     ]
   })

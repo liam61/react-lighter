@@ -17,6 +17,10 @@ yarn server // 加载打包后的项目
 
 ## TODO
 
-1. react-hot-loader 监听 css 变化
+1. react-hot-loader 监听 css 变化（react-hot-loader 不能监听抽离的 css 代码） √
 
-2. 制作成脚手架
+2. 懒加载组件 √
+
+3. 去除无用 css 代码 （不能使用 css 分离，否则无法去除）√
+
+4. 制作成脚手架
