@@ -1,6 +1,7 @@
 // const webpack = require('webpack')
 const merge = require('webpack-merge')
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const options = require('./options')
 const getBaseConfig = require('./webpack.base.config')
 
@@ -24,7 +25,17 @@ function getProdConfig(opts) {
             reduce_vars: true
           }
         }
-      })
+      }),
+      new OptimizeCSSAssetsPlugin({
+        assetNameRegExp: /\.css\.*(?!.*map)/g,
+        cssProcessor: require('cssnano'),
+        cssProcessorOptions: {
+          discardComments: { removeAll: true },
+          safe: true, // 避免 cssnano 重新计算 z-index
+          autoprefixer: false // 关闭autoprefixer功能 使用postcss的autoprefixer功能
+        },
+        canPrint: true
+      }),
     ]
   })
 }

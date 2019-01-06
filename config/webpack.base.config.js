@@ -3,9 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const PurifycssWebpack = require('purifycss-webpack') // 去除没引用到的样式，必须在 html-webpack-plugin 后引用
-// const PurgecssPlugin = require('purgecss-webpack-plugin') // no work ?
-const glob = require('glob-all')
+const PurifycssWebpack = require('purifycss-webpack')
+const PurgecssPlugin = require('purgecss-webpack-plugin') // 去除没引用到的样式，必须在 html-webpack-plugin 后引用
+const glob = require('glob-all') // require('glob')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const HappyPack = require('happypack')
 const os = require('os')
@@ -22,22 +22,31 @@ module.exports = ({
   author,
   cssPath,
   purifycssFile,
-  usrCssExtract,
+  useCssExtract,
   assetsPath,
   copyConfig,
   dllFiles
 }) => {
   const env = process.env.NODE_ENV
+  const isDevMode = env === 'development'
   const dllWebpack = require(resolve(`${outputPath}/react.manifest.json`))
+  const assetOptions = {
+    limit: 10240,
+    name: `${assetsPath}/[name].[ext]`,
+    publicPath: '../'
+  }
+
   const plugins = [
     new HtmlWebpackPlugin({
       template: resolve(templateFile),
       filename: 'index.html',
       title: templateTitle,
-      minify: env === 'development' ? null : {
-        removeAttributeQuotes: true,
-        collapseWhitespace: true
-      }
+      minify: isDevMode
+        ? null
+        : {
+          removeAttributeQuotes: true,
+          collapseWhitespace: true
+        }
       // favicon: './favicon.ico',
     }),
     new webpack.BannerPlugin(`created by ${author}`),
@@ -48,15 +57,17 @@ module.exports = ({
       filepath: resolve(`${outputPath}/*.dll.js`),
       includeSourcemap: false
     }),
-    new PurifycssWebpack({
-      paths: glob.sync(purifycssFile.map(url => resolve(url))),
-      minimize: true
-    }),
     new MiniCssExtractPlugin({
-      filename: `${cssPath}/main.[hash:8].css`
-      // filename: `${cssPath}/[name].[hash:8].css`
+      filename: `${cssPath}/[name].[hash:8].css`
       // chunkFilename: "[id].css"
     }),
+    new PurgecssPlugin({
+      paths: glob.sync(purifycssFile.map(url => resolve(url)), { nodir: true })
+    }),
+    // new PurifycssWebpack({
+    //   paths: glob.sync(purifycssFile.map(url => resolve(url))),
+    //   minimize: true
+    // }),
     new HappyPack({
       id: 'babel', // loader 中指定的 id
       loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
@@ -65,12 +76,17 @@ module.exports = ({
     }),
     new webpack.SourceMapDevToolPlugin({
       filename: '[file].map'
-    }),
-    new CleanWebpackPlugin([resolve(outputPath)], {
-      root: process.cwd(),
-      exclude: dllFiles
     })
   ]
+
+  if (!isDevMode) {
+    plugins.push(
+      new CleanWebpackPlugin([resolve(outputPath)], {
+        root: process.cwd(),
+        exclude: dllFiles
+      })
+    )
+  }
 
   if (copyConfig.needsCopy) {
     plugins.push(
@@ -83,12 +99,6 @@ module.exports = ({
     )
   }
 
-  const assetOptions = {
-    limit: 10240,
-    name: `${assetsPath}/[name].[ext]`,
-    publicPath: '../'
-  }
-
   const baseConfig = {
     entry: ['@babel/polyfill', resolve(entryFile)],
     output: {
@@ -96,10 +106,9 @@ module.exports = ({
       path: resolve(outputPath)
     },
     mode: env,
-    devtool:
-      env === 'development'
-        ? 'cheap-module-eval-source-map'
-        : 'cheap-module-source-map',
+    devtool: isDevMode
+      ? 'cheap-module-eval-source-map'
+      : 'cheap-module-source-map',
     module: {
       rules: [
         {
@@ -119,7 +128,7 @@ module.exports = ({
         {
           test: /\.css$/,
           use: [
-            usrCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
             'postcss-loader'
           ]
@@ -127,7 +136,7 @@ module.exports = ({
         {
           test: /\.less$/,
           use: [
-            usrCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
             'postcss-loader',
             {
@@ -142,7 +151,7 @@ module.exports = ({
         {
           test: /\.scss$/,
           use: [
-            usrCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
             'postcss-loader',
             {
@@ -194,6 +203,12 @@ module.exports = ({
             chunks: 'initial',
             name: 'vendor',
             priority: 10, // 优先
+            enforce: true
+          },
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
             enforce: true
           }
         }

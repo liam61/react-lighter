@@ -3,7 +3,7 @@ import Hello from './components/Hello/loadable'
 
 import addIcon from './assets/add.svg'
 
-import './index.less' // 记得修改测试样式
+import './index.less'
 
 const App = () => (
   <div>
