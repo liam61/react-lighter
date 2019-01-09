@@ -1,6 +1,6 @@
 const { main, name, author } = require('../package.json')
 
-const outputPath = 'dist'
+const outputDir = 'dist'
 
 const entryDir = 'src'
 
@@ -28,8 +28,8 @@ const extraOptions = {
   copyConfig: { // 是否有不需要处理，直接拷贝的文件
     needsCopy: true,
     fromPath: `${entryDir}/docs`,
-    toPath: `${outputPath}/docs`
+    toPath: `${outputDir}/docs`
   }
 }
 
-module.exports = Object.assign( baseOptions, { outputPath, entryDir }, extraOptions)
+module.exports = Object.assign( baseOptions, { entryDir, outputDir }, extraOptions)

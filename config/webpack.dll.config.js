@@ -1,6 +1,6 @@
 const webpack = require('webpack') // eslint-disable-line
 const { resolve } = require('./utils')
-const { moduleToDll, outputPath } = require('./options')
+const { moduleToDll, outputDir } = require('./options')
 
 function getDllConfig(dll, output) {
   return {
@@ -15,10 +15,10 @@ function getDllConfig(dll, output) {
     plugins: [
       new webpack.DllPlugin({
         name: '_dll_[name]_[hash]', // 和 library 中一致，输出的 manifest.json 中的 name 值
-        path: resolve(outputPath, '[name].manifest.json')
+        path: resolve(output, '[name].manifest.json')
       })
     ]
   }
 }
 
-module.exports = getDllConfig(moduleToDll, outputPath)
+module.exports = getDllConfig(moduleToDll, outputDir)

@@ -10,7 +10,7 @@ process.env.NODE_ENV = 'development'
 function getDevConfig(opts) {
   return merge(getBaseConfig(opts), {
     devServer: {
-      contentBase: resolve(opts.outputPath), // 本地服务器加载的页面所在的目录，默认 / 是在当前的开发文件目录
+      contentBase: resolve(opts.outputDir), // 本地服务器加载的页面所在的目录，默认 / 是在当前的开发文件目录
       disableHostCheck: true,
       compress: true,
       historyApiFallback: true, // 不跳转

@@ -16,7 +16,7 @@ const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length }) // ца╣ц
 module.exports = ({
   entryDir,
   entryFile,
-  outputPath,
+  outputDir,
   templateFile,
   templateTitle,
   author,
@@ -29,9 +29,9 @@ module.exports = ({
 }) => {
   const env = process.env.NODE_ENV
   const isDevMode = env === 'development'
-  const dllWebpack = require(resolve(`${outputPath}/react.manifest.json`))
+  const dllWebpack = require(resolve(`${outputDir}/react.manifest.json`))
   const assetOptions = {
-    limit: 10240,
+    limit: 10000,
     name: `${assetsPath}/[name].[ext]`,
     publicPath: '../'
   }
@@ -54,7 +54,7 @@ module.exports = ({
       manifest: dllWebpack
     }),
     new AddAssetHtmlPlugin({
-      filepath: resolve(`${outputPath}/*.dll.js`),
+      filepath: resolve(`${outputDir}/*.dll.js`),
       includeSourcemap: false
     }),
     new MiniCssExtractPlugin({
@@ -81,7 +81,7 @@ module.exports = ({
 
   if (!isDevMode) {
     plugins.push(
-      new CleanWebpackPlugin([resolve(outputPath)], {
+      new CleanWebpackPlugin([resolve(outputDir)], {
         root: process.cwd(),
         exclude: dllFiles
       })
@@ -103,7 +103,7 @@ module.exports = ({
     entry: ['@babel/polyfill', resolve(entryFile)],
     output: {
       filename: '[name].[hash:8].js',
-      path: resolve(outputPath)
+      path: resolve(outputDir)
     },
     mode: env,
     devtool: isDevMode
@@ -186,7 +186,9 @@ module.exports = ({
     resolve: {
       extensions: ['.js', '.jsx', '.css', '.less', 'scss'],
       modules: [resolve(entryDir), resolve('node_modules')],
-      alias: {}
+      alias: {
+        '@': resolve(entryDir)
+      }
     },
     optimization: {
       splitChunks: {
