@@ -5,11 +5,11 @@ import './styles'
 
 class Hello extends PureComponent {
   static propTypes = {
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
   }
 
   state = {
-    count: 1
+    count: 1,
   }
 
   handleClick = () => {
