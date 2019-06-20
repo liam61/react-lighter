@@ -1,0 +1,5 @@
+$prefixCls: '${type}$-${splitDashName}$';
+
+.#{$prefixCls} {
+
+}

@@ -1,0 +1,12 @@
+$prefixCls: 'page-404';
+
+.#{$prefixCls} {
+  height: 100vh;
+  
+  h1 {
+    padding-top: 500px;
+    text-align: center;
+    margin: 0;
+    font-size: 45px;
+  }
+}

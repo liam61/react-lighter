@@ -5,6 +5,9 @@
 .idea
 .project
 
+# vscode
+.vscode
+
 # npm
 node_modules
 npm-debug.log
@@ -16,6 +19,9 @@ package-lock.json
 # folder
 build
 dist
+
+# bak
+*.bak
 
 # cache
 .cache
