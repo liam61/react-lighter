@@ -13,7 +13,7 @@ const baseOptions = {
   purifycssFile: [`${entryDir}/*.html`, `${entryDir}/**/*.js`],
   assetsPath: 'assets',
   moduleToDll: {
-    react: ['react', 'react-dom', 'react-router-dom'],
+    react: ['react', 'react-dom', 'react-router-dom', 'mobx', 'mobx-react', 'axios', 'zone.js'],
   },
   dllFiles: ['react.dll.js', 'react.manifest.json'],
 }

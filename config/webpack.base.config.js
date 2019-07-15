@@ -3,17 +3,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const PurifycssWebpack = require('purifycss-webpack')
+// const PurifycssWebpack = require('purifycss-webpack')
 const PurgecssPlugin = require('purgecss-webpack-plugin') // 去除没引用到的样式，必须在 html-webpack-plugin 后引用
 const glob = require('glob-all') // require('glob')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const HappyPack = require('happypack')
 const os = require('os')
-const tsImportPluginFactory = require('ts-import-plugin')
+// const tsImportPluginFactory = require('ts-import-plugin')
 const createMobxTransformer = require('./createMobxTransformer')
 const { resolve } = require('./utils')
 
-const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length }) // 根据系统的内核数量指定线程池个数
+const happyThreadPool = HappyPack.ThreadPool({ size: Math.min(os.cpus().length, 4) })
 
 module.exports = ({
   entryDir,
@@ -58,6 +58,7 @@ module.exports = ({
     new AddAssetHtmlPlugin({
       filepath: resolve(`${outputDir}/*.dll.js`),
       includeSourcemap: false,
+      hash: true,
     }),
     new MiniCssExtractPlugin({
       filename: `${cssPath}/[name].[hash:8].css`,
@@ -71,8 +72,14 @@ module.exports = ({
     //   minimize: true
     // }),
     new HappyPack({
-      id: 'babel', // loader 中指定的 id
+      id: 'tspack', // loader 中指定的 id
       loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
+      threadPool: happyThreadPool,
+      verbose: true,
+    }),
+    new HappyPack({
+      id: 'jspack',
+      loaders: ['babel-loader?cacheDirectory'],
       threadPool: happyThreadPool,
       verbose: true,
     }),
@@ -102,7 +109,9 @@ module.exports = ({
   }
 
   const baseConfig = {
-    entry: ['@babel/polyfill', resolve(entryFile)],
+    entry: {
+      index: ['@babel/polyfill', resolve(entryFile)], // main
+    },
     output: {
       filename: '[name].[hash:8].js',
       path: resolve(outputDir),
@@ -113,15 +122,14 @@ module.exports = ({
       rules: [
         {
           test: /\.(js|jsx)$/,
-          // use: ['happypack/loader?id=babel'],
-          loader: 'babel-loader',
+          loader: 'happypack/loader?id=jspack',
           include: resolve(entryDir),
           exclude: /node_modules/,
         },
         {
           test: /\.(ts|tsx)$/,
           use: [
-            'happypack/loader?id=babel',
+            'happypack/loader?id=tspack',
             {
               loader: 'awesome-typescript-loader',
               options: {
@@ -138,7 +146,6 @@ module.exports = ({
           ],
           include: resolve(entryDir),
           exclude: /node_modules/,
-          // 优化依赖库体积
         },
         {
           test: /\.css$/,
@@ -203,7 +210,7 @@ module.exports = ({
       // 'noParse': /jquery/
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
       modules: [resolve(entryDir), resolve('node_modules')],
       alias: {
         '@': resolve(entryDir),
@@ -220,11 +227,11 @@ module.exports = ({
             maxInitialRequests: 5,
             minSize: 0,
           },
-          vendor: {
+          vendor: { // 重复引用的三方库
+            name: 'vendor',
             test: /node_modules/,
             chunks: 'initial',
-            name: 'vendor',
-            priority: 10, // 优先
+            priority: 10,
             enforce: true,
           },
           styles: {

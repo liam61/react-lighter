@@ -30,7 +30,7 @@ function getProdConfig(opts) {
         cssProcessorOptions: {
           discardComments: { removeAll: true },
           safe: true, // 避免 cssnano 重新计算 z-index
-          autoprefixer: false, // 关闭autoprefixer功能 使用postcss的autoprefixer功能
+          autoprefixer: false, // 关闭 autoprefixer 功能 使用 postcss 的 autoprefixer 功能
         },
         canPrint: true,
       }),

@@ -16,7 +16,7 @@ class LoadingComponent extends React.PureComponent<LoadingComponentProps> {
 }
 
 export default Loadable({
-  loader: () => import('./index'),
+  loader: () => import(/* webpackChunkName: "example" */ './index'),
   loading: LoadingComponent,
   delay: 100,
   timeout: 10000,
