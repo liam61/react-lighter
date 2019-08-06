@@ -9,13 +9,17 @@
     "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.config.js --progress",
     "lint": "tslint --fix --project .",
     "dll": "webpack --config config/webpack.dll.config.js --progress",
-    "server": "hs dist"
+    "server": "hs dist",
+    "docker": "docker build -t lawler61/react-lighter ."
   },
   "author": "lawler61",
   "license": "ISC",
-  "pre-commit": [
-    "lint"
-  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm lint",
+      "pre-push": ""
+    }
+  },
   "keywords": [
     "react",
     "mobx",
@@ -39,6 +43,7 @@
     "antd-mobile": "2.2.11",
     "axios": "0.18.0",
     "helmet": "3.16.0",
+    "husky": "^3.0.2",
     "mobx": "5.9.4",
     "mobx-react": "5.4.3",
     "qs": "6.7.0",
@@ -113,7 +118,6 @@
     "postcss-url": "8.0.0",
     "postcss-viewport-units": "0.1.6",
     "postcss-write-svg": "3.0.1",
-    "pre-commit": "1.2.2",
     "precss": "4.0.0",
     "purgecss-webpack-plugin": "1.4.0",
     "purify-css": "1.2.5",
