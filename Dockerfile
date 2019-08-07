@@ -1,14 +1,15 @@
 FROM node:8.10.0
 
 RUN npm i -g yarn \
+  && chmod +x /usr/local/lib/node_modules/yarn/bin/yarn.js \
   && apt-get update \
   && apt-get install -y nginx
 
-# 指定目录
-WORKDIR /app
-
 # 将当前目录拷贝到工作目录
 COPY . /app/
+
+# 指定目录
+WORKDIR /app
 
 EXPOSE 80
 
