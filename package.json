@@ -7,11 +7,12 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.config.js --progress",
     "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.config.js --progress",
-    "lint": "tslint --fix --project .",
     "dll": "webpack --config config/webpack.dll.config.js --progress",
+    "lint": "tslint --fix --project .",
     "server": "hs dist",
     "deploy": "scripty",
     "docker:build": "docker build -t lawler61/react-lighter .",
+    "docker:push": "docker push lawler61/react-lighter",
     "docker:run": "docker run -d -p 8080:80 lawler61/react-lighter"
   },
   "author": "lawler61",
