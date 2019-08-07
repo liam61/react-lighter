@@ -1,5 +1,7 @@
 FROM node:10-alpine
 
+LABEL maintainer "lawler61@163.com"
+
 # 将当前目录拷贝到工作目录
 COPY . /app/
 
@@ -10,10 +12,10 @@ RUN apk add --update nginx \
   && yarn \
   && yarn dll \
   && yarn build \
-  && cp -r dist/* /var/www/html/ \
+  && cp -r dist/ /var/www/html/ \
   && rm -rf /app
 
-ADD nginx.conf /etc/nginx/
+COPY nginx.conf /etc/nginx/
 
 EXPOSE 80
 

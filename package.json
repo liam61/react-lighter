@@ -13,7 +13,7 @@
     "deploy": "scripty",
     "docker:build": "docker build -t lawler61/react-lighter .",
     "docker:push": "docker push lawler61/react-lighter",
-    "docker:run": "docker run -d -p 8080:80 lawler61/react-lighter"
+    "docker:run": "docker run -rm -d -p 8080:80 lawler61/react-lighter"
   },
   "author": "lawler61",
   "license": "ISC",
