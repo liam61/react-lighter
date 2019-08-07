@@ -13,6 +13,11 @@
   },
   "author": "lawler61",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lawler61/react-lighter.git"
+  },
+  "homepage": "https://github.com/lawler61/react-lighter",
   "pre-commit": [
     "lint"
   ],

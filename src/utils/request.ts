@@ -5,14 +5,7 @@ import { Toast } from 'antd-mobile'
 import { DELAY_TIME, API_URL } from 'common'
 import { IReqOptions, IResponse } from '../interface'
 
-// examples:
-// 1. get    baseUrl/users/Dolor   await request.setPath('users').get({ uri: 'Dolor' })
-
-// 2. delete baseUrl/users/Dolor   await request.setPath('users').delete({ uri: 'Dolor' })
-
-// 3. post   baseUrl/users         await request.setPath('users').post({ data: { name: 'lawler', email: 'lawler61@163.com' })
-
-// 4. put    baseUrl/users         await request.setPath('users').put({ uri: 'Dolor', data: { name: 'Bolor' } })
+// NOTE: examples: see https://github.com/lawler61/react-lighter#%E5%85%ADaxios-%E5%B0%81%E8%A3%85
 
 const defaultOptions: AxiosRequestConfig = {
   baseURL: API_URL,

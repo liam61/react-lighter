@@ -93,7 +93,7 @@ yarn build && yarn server // for prod
 
 ### 六、Axios 封装
 
-参考
+参考：
 
 - [axios restful 封装](https://github.com/zhaotoday/rest)
 
