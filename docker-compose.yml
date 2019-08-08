@@ -4,18 +4,20 @@ services:
   nginx:
     restart: always
     image: nginx:1.17.2-alpine
+    container_name: lighter-nginx
     ports:
       - 8080:80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./dist:/var/www/html
+      - ./dist/app:/var/www/html
       - ./dist/logs:/var/log/nginx
-  lighter:
+  web:
     image: lawler61/react-lighter
+    container_name: lighter-web
     volumes: 
-      - ./dist:/app
+      - ./dist/app:/app
     command:
       - /bin/sh
       - -c
       - |
-        cp -r /build /app
+        cp -r /build/* /app

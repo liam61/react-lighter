@@ -6,15 +6,14 @@
   "main": "src/index.tsx",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.config.js --progress",
-    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.config.js --progress",
     "dll": "webpack --config config/webpack.dll.config.js --progress",
     "lint": "tslint --fix --project .",
+    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.config.js --progress",
     "server": "hs dist",
     "deploy": "scripty",
     "docker:build": "docker build -t lawler61/react-lighter .",
-    "docker:run": "docker run --rm --name react-lighter -d -p 8080:8080 lawler61/react-lighter",
-    "docker:push": "docker push lawler61/react-lighter",
-    "docker:server": "docker-compose up -d"
+    "docker:up": "docker-compose up -d",
+    "docker:push": "docker push lawler61/react-lighter"
   },
   "author": "lawler61",
   "license": "ISC",
