@@ -12,8 +12,9 @@
     "server": "hs dist",
     "deploy": "scripty",
     "docker:build": "docker build -t lawler61/react-lighter .",
+    "docker:run": "docker run --name react-lighter -d -p 8080:8080 lawler61/react-lighter",
     "docker:push": "docker push lawler61/react-lighter",
-    "docker:run": "docker run -rm -d -p 8080:80 lawler61/react-lighter"
+    "docker:server": "docker-compose up -d"
   },
   "author": "lawler61",
   "license": "ISC",
