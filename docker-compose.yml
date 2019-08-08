@@ -1,0 +1,11 @@
+version: '3'
+services:
+  nginx:
+    restart: always
+    image: nginx:1.17.2-alpine
+    ports:
+      - 4000:8090
+  web:
+    image: lawler61/react-lighter
+    ports:
+      - 4000:8080
