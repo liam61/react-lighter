@@ -9,10 +9,6 @@ WORKDIR /app
 RUN yarn \
   && yarn dll \
   && yarn build \
-  && yarn global add http-server \
   && yarn cache clean \
-  && rm -rf node_modules
-
-CMD ["yarn","server"]
-
-EXPOSE 8080
+  && cp -r dist /build \
+  && rm -rf /app
