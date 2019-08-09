@@ -1,5 +1,6 @@
 version: '3.0'
 
+# 不建议使用此方案，build 的 image 必需与 nginx 绑定使用
 services:
   nginx:
     restart: always
@@ -9,13 +10,13 @@ services:
       - 8080:80
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./dist/app:/var/www/html
-      - ./dist/logs:/var/log/nginx
+      - ./nginx/app:/var/www/html
+      - ./nginx/logs:/var/log/nginx
   web:
-    image: lawler61/react-lighter
+    image: lawler61/react-lighter2
     container_name: lighter-web
     volumes: 
-      - ./dist/app:/app
+      - ./nginx/app:/app
     command:
       - /bin/sh
       - -c

@@ -11,7 +11,7 @@
     "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.config.js --progress",
     "server": "hs dist",
     "deploy": "scripty",
-    "docker:build": "docker build -t lawler61/react-lighter .",
+    "docker:build": "docker build -t lawler61/react-lighter2 .",
     "docker:up": "docker-compose up -d",
     "docker:push": "docker push lawler61/react-lighter"
   },
