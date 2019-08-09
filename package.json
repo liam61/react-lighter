@@ -10,9 +10,7 @@
     "server": "hs dist",
     "dll": "webpack --config config/webpack.dll.config.js --progress",
     "lint": "tslint --fix --project .",
-    "deploy": "scripty",
     "docker:build": "docker build -t lawler61/react-lighter .",
-    "docker:up": "docker-compose up -d",
     "docker:run": "docker run --rm --name react-lighter -d -p 8080:8080 lawler61/react-lighter",
     "docker:push": "docker push lawler61/react-lighter"
   },
