@@ -1,15 +1,15 @@
-import * as React from 'react'
+import React from 'react'
 import { inject, observer } from 'mobx-react'
 import { Button } from 'antd-mobile'
 import ExampleCom from 'components/ExampleCom'
 import { IRootStore, IRootAction } from 'typings'
-
-import './index.scss'
-
+import { autobind } from 'core-decorators'
 import successIcon from 'assets/images/success.svg'
+import './index.scss'
 
 @inject(injector)
 @observer
+@autobind
 export default class Example extends React.Component<IProps, {}> {
   static defaultProps = {
     prefixCls: 'page-example',
@@ -19,10 +19,8 @@ export default class Example extends React.Component<IProps, {}> {
     this.handleLoadGoods()
   }
 
-  handleLoadGoods = () => {
-    const { action } = this.props
-
-    action!.loadGoods()
+  handleLoadGoods() {
+    this.props.action!.loadGoods()
   }
 
   render() {
@@ -34,7 +32,7 @@ export default class Example extends React.Component<IProps, {}> {
 
     return (
       <div className={prefixCls}>
-        <h1>this is example page</h1>
+        <h1>this is Example page</h1>
         <ExampleCom name="lawler" />
         <img src={successIcon} width="100" alt="successIcon" />
         <h2>当前产品</h2>

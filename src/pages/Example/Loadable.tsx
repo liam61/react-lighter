@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Loadable, { LoadingComponentProps } from 'react-loadable'
 
 class LoadingComponent extends React.PureComponent<LoadingComponentProps> {

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { inject, observer } from 'mobx-react'
 import { IRootStore, IRootAction } from '${relDir}$typings'
 
@@ -39,12 +39,6 @@ interface IState extends Partial<injectorReturnType> {
   [k: string]: any
 }
 
-function injector({
-  rootStore,
-  rootAction,
-}: {
-  rootStore: IRootStore,
-  rootAction: IRootAction,
-}) {
+function injector({ rootStore, rootAction }: { rootStore: IRootStore, rootAction: IRootAction }) {
   return {}
 }

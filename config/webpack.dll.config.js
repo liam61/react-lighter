@@ -1,4 +1,4 @@
-const webpack = require('webpack') // eslint-disable-line
+const webpack = require('webpack')
 const { resolve } = require('./utils')
 const { moduleToDll, outputDir } = require('./options')
 
@@ -6,9 +6,9 @@ function getDllConfig(dll, output) {
   return {
     entry: dll,
     output: {
-      filename: '[name].dll.js', // 输出动态连接库的文件名称
+      filename: '[name].dll.js',
       path: resolve(output),
-      libraryTarget: 'var', // 输出方式 默认 'var' 形式赋给变量
+      libraryTarget: 'var',
       library: '_dll_[name]_[hash]', // 全局变量名称
     },
     mode: 'production',

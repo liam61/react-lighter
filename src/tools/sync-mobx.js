@@ -11,9 +11,7 @@ const storesPath = listFile(
   basePath,
   /(.+\/)*(stores|globalStores)\/(.+)\.(t|j)s$/g
 )
-// 所有 store 的 path 数组
 const actionsPath = listFile(basePath, /(.+\/)*actions\/(.+)\.(t|j)s$/g)
-// 所有 action 的 path 数组
 const mobxDependencePath = Path.join(process.cwd(), basePath) // ./src
 const mobxTypingsPath = Path.join(process.cwd(), basePath, 'typings') // ./src/typings
 
@@ -163,7 +161,6 @@ function removeExt(path) {
  * @defaultFileContent ?{string}    默认文件内容
  * @return {bollean}
  */
-
 function createFile(path, defaultFileContent) {
   defaultFileContent = defaultFileContent || ''
   const existed = FS.existsSync(path)

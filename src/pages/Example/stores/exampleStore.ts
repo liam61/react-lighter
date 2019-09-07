@@ -18,14 +18,12 @@ export default class ExampleStore {
   @action
   setCurGoods(goods: IGoods) {
     this.curGoods = goods
-
     return this
   }
 
   @action
   setLoading(flag: boolean) {
     this.loading = flag
-
     return this
   }
 }

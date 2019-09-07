@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import ExamplePage from 'pages/Example/Loadable'
 import NoMatchPage from 'pages/404'
 

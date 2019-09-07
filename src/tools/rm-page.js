@@ -35,29 +35,23 @@ program.on('--help', () => {
     '  This is a quick tool to remove a page or component.  \n  It will remove index.tsx,index.scss file and stores and actions \n'
   )
   console.log('')
-
   console.log('  Examples:')
-
   console.log('')
-
   console.log(
     `    $ node tools/rm-page.js offerList        ${Chalk.grey(
       '// remove a page'
     )}`
   )
-
   console.log(
     `    $ node tools/rm-page.js offerList -c        ${Chalk.grey(
       '// remove a component for common'
     )}`
   )
-
   console.log(
     `    $ node tools/rm-page.js offerList/tableList        ${Chalk.grey(
       '// remove a component inner page offerList'
     )}`
   )
-
   console.log('')
 })
 

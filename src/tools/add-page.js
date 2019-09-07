@@ -1,5 +1,3 @@
-// / <reference path="../typings/node/node.d.ts"/>
-
 const program = require('commander')
 const FS = require('fs-extra')
 const Path = require('path')
@@ -36,35 +34,28 @@ program.on('--help', () => {
     '  This is a quick tool to create a page.\n  It can create index.tsx, index.scss file and add <-m> or <--mobx> param can create stores and actions.\n'
   )
   console.log('')
-
   console.log('  Examples:')
-
   console.log('')
-
   console.log(
     `    $ node tools/add-page.js offerList${Chalk.grey(
       '              // create a page'
     )}`
   )
-
   console.log(
     `    $ node tools/add-page.js offerList -c${Chalk.grey(
       '           // create a component for common'
     )}`
   )
-
   console.log(
     `    $ node tools/add-page.js offerList/tableList${Chalk.grey(
       '    // create a component inner page offerList'
     )}`
   )
-
   console.log(
     `    $ node tools/add-page.js offerList -m${Chalk.grey(
       '           // create a page with stores and actions'
     )}`
   )
-
   console.log('')
 })
 
@@ -179,9 +170,6 @@ function toSplitDash(str) {
     upperCaseRegex,
     (m, index) => (index ? '-' : '') + m.toLowerCase()
   )
-
-  // const lastIdx = str.lastIndexOf('-')
-  // return lastIdx === -1 ? str : str.slice(0, lastIdx)
 }
 
 function fisrtToLowercase(str) {

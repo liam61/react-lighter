@@ -1,10 +1,11 @@
-import * as React from 'react'
+import React from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import routesConfig from './config'
 
 function getRoutes(routes = routesConfig) {
   return routes.map(route => {
-    const { key, redirect, children, component: Cmp } = route
+    const { key, redirect, children, component } = route
+    const Cmp = component as any;
 
     if (children) {
       return (

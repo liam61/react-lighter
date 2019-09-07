@@ -1,16 +1,17 @@
-import * as React from 'react'
-
-import './index.less'
+import React from 'react'
+import { autobind } from 'core-decorators';
 import { Button } from 'antd-mobile'
+import './index.less'
 
 interface IProps {
   name: string
 }
 
+@autobind
 class Hello extends React.PureComponent<IProps> {
   state = { count: 1 }
 
-  handleClick = () => {
+  handleClick() {
     const { count } = this.state
     this.setState({ count: count + 1 })
   }

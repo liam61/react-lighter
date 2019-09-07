@@ -1,15 +1,14 @@
 const webpack = require('webpack')
+const os = require('os')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 // const PurifycssWebpack = require('purifycss-webpack')
 const PurgecssPlugin = require('purgecss-webpack-plugin') // 去除没引用到的样式，必须在 html-webpack-plugin 后引用
-const glob = require('glob-all') // require('glob')
+const glob = require('glob-all')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const HappyPack = require('happypack')
-const os = require('os')
-// const tsImportPluginFactory = require('ts-import-plugin')
 const createMobxTransformer = require('./createMobxTransformer')
 const { resolve } = require('./utils')
 
@@ -21,7 +20,7 @@ module.exports = ({
   outputDir,
   templateFile,
   templateTitle,
-  author,
+  // author,
   cssPath,
   purifycssFile,
   useCssExtract,
@@ -51,7 +50,6 @@ module.exports = ({
           },
       favicon: resolve(entryDir, 'assets/images/favicon.jpg'),
     }),
-    new webpack.BannerPlugin(`created by ${author}`),
     new webpack.DllReferencePlugin({
       manifest: dllWebpack,
     }),
@@ -62,15 +60,10 @@ module.exports = ({
     }),
     new MiniCssExtractPlugin({
       filename: `${cssPath}/[name].[hash:8].css`,
-      // chunkFilename: "[id].css"
     }),
     new PurgecssPlugin({
       paths: glob.sync(purifycssFile.map(url => resolve(url)), { nodir: true }),
     }),
-    // new PurifycssWebpack({
-    //   paths: glob.sync(purifycssFile.map(url => resolve(url))),
-    //   minimize: true
-    // }),
     new HappyPack({
       id: 'tspack', // loader 中指定的 id
       loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
@@ -83,8 +76,32 @@ module.exports = ({
       threadPool: happyThreadPool,
       verbose: true,
     }),
-    new webpack.SourceMapDevToolPlugin({
-      filename: '[file].map',
+    new HappyPack({
+      id: 'csspack',
+      use: [
+        useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+        'css-loader',
+        'postcss-loader',
+        {
+          loader: 'sass-loader',
+          options: {
+            sassOptions: {
+              javascriptEnabled: true,
+              includePaths: [resolve(entryDir, 'common')],
+              sourceMap: true,
+            },
+          },
+        },
+        {
+          loader: 'sass-resources-loader', // 全局共用 scss 样式
+          options: {
+            sourceMap: true,
+            resources: resolve(entryDir, 'assets/css/global_vars.scss'),
+          },
+        },
+      ],
+      threadPool: happyThreadPool,
+      verbose: true,
     }),
   ]
 
@@ -109,9 +126,7 @@ module.exports = ({
   }
 
   const baseConfig = {
-    entry: {
-      index: ['@babel/polyfill', resolve(entryFile)], // main
-    },
+    entry: resolve(entryFile),
     output: {
       filename: '[name].[hash:8].js',
       path: resolve(outputDir),
@@ -134,9 +149,6 @@ module.exports = ({
               loader: 'awesome-typescript-loader',
               options: {
                 transpileOnly: true,
-                // compilerOptions: {
-                //   module: 'es2015'
-                // },
                 experimentalWatchApi: true,
                 getCustomTransformers: () => ({
                   before: [createMobxTransformer()],
@@ -168,26 +180,7 @@ module.exports = ({
         },
         {
           test: /\.scss$/,
-          use: [
-            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
-            'css-loader',
-            'postcss-loader',
-            {
-              loader: 'sass-loader',
-              options: {
-                javascriptEnabled: true,
-                includePaths: [resolve(entryDir, 'common')],
-                sourceMap: true,
-              },
-            },
-            {
-              loader: 'sass-resources-loader', // 全局共用 scss 样式
-              options: {
-                sourceMap: true,
-                resources: resolve(entryDir, 'assets/css/global_vars.scss'),
-              },
-            },
-          ],
+          loader: 'happypack/loader?id=csspack',
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,

@@ -1,9 +1,7 @@
 import { action, observable, computed } from 'mobx'
 import { mStore } from '../../../mobx/store'
 
-interface ISomething {
-  
-}
+interface ISomething {}
 
 @mStore
 export default class ${uppercaseName}$Store {
