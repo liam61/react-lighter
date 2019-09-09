@@ -2,7 +2,7 @@
 
 to initialize your react project as simple as lighting a fire
 
-初始化 react 项目
+初始化 react H5 项目
 
 ## 技术栈
 
@@ -47,7 +47,7 @@ yarn build && yarn server // for prod
 
 ### 二、抽离 dll
 
-使用 webpack DllReferencePlugin 插件，先把 react 抽离成 dll，在后续开发中能更快加载
+使用 `webpack.DllReferencePlugin` 插件，先把 react 抽离成 dll，在后续开发中能更快加载
 
 ### 三、多线程打包
 
@@ -89,7 +89,19 @@ yarn build && yarn server // for prod
 
 4. tools 脚手架使用
 
-> 参见 [mobx example 开发章节](https://github.com/luruozhou/mobx-example#%E5%BC%80%E5%8F%91)
+- 参考：[mobx example 开发章节](https://github.com/luruozhou/mobx-example#%E5%BC%80%E5%8F%91)
+
+> 添加界面
+> node src/tools/add-page.js -m APage
+>
+> 添加子界面
+> node src/tools/add-page.js -m APage/AInnerPage
+>
+> 删除界面
+> node src/tools/rm-page.js -m APage/AInnerPage
+>
+> 添加组件
+> node src/tools/add-page.js -c ACom
 
 ### 六、Axios 封装
 
@@ -97,7 +109,7 @@ yarn build && yarn server // for prod
 
 - [axios restful 封装](https://github.com/zhaotoday/rest)
 
-将 axios 进行 restful 风格的封装，配合 interceptor 和 histroy 进行权限验证和跳转
+将 axios 进行 restful 风格的封装，配合 interceptor 和 history 进行权限验证和跳转
 
 使用：
 
@@ -147,6 +159,10 @@ request.setPath('users/{id}/articles/{id}').replace('lawler', 'react 学习之�
 
 ## 项目展示
 
-1. [问答系统 前端 -> https://github.com/lawler61/qa-app](https://github.com/lawler61/qa-app)
+1. 录屏
 
-2. [线上地址，去看看 -> https://qa.omyleon.com](https://qa.omyleon.com)
+![录屏](./video.gif)
+
+2. [问答系统 前端（react-lighter 构建） -> https://github.com/lawler61/qa-app](https://github.com/lawler61/qa-app)
+
+3. [线上地址，去看看 -> https://qa.omyleon.com](https://qa.omyleon.com)
