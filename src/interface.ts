@@ -4,12 +4,10 @@ interface IReqOptions {
   data?: { [key: string]: any }
 }
 
-type resType = 'success' | 'fail' | 'info'
-
 interface IResponse {
   status: number
   statusText: string
-  data: { type: resType; message: string; [key: string]: any }
+  data: { message: string; [key: string]: any }
 }
 
-export { IReqOptions, resType, IResponse }
+export { IReqOptions, IResponse }

@@ -39,7 +39,7 @@ export default class Example extends React.Component<IProps, {}> {
         {loading ? (
           <h1 className="loading">loading...</h1>
         ) : (
-          <ul className="qa-border-1px">
+          <ul className="rl-border-1px">
             <li>{name}</li>
             <li>{desc}</li>
           </ul>
@@ -55,7 +55,7 @@ export default class Example extends React.Component<IProps, {}> {
 
 type injectorReturnType = ReturnType<typeof injector>
 
-interface IProps extends Partial<injectorReturnType> {
+export interface IProps extends Partial<injectorReturnType> {
   prefixCls?: string
 }
 

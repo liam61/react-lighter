@@ -1,23 +1,12 @@
-import React from 'react'
-import Loadable, { LoadingComponentProps } from 'react-loadable'
+import React, { Suspense, lazy } from 'react'
+import { IProps } from './index'
 
-class LoadingComponent extends React.PureComponent<LoadingComponentProps> {
-  render() {
-    const { error, isLoading, pastDelay, timedOut } = this.props
-    return (
-      <div>
-        {error}
-        {isLoading}
-        {pastDelay}
-        {timedOut}
-      </div>
-    )
-  }
+const ExamplePage = lazy(() => import(/* webpackChunkName: "example" */ './index'))
+
+export default function ExampleAsyncPage(props?: IProps) {
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <ExamplePage {...props} />
+    </Suspense>
+  )
 }
-
-export default Loadable({
-  loader: () => import(/* webpackChunkName: "example" */ './index'),
-  loading: LoadingComponent,
-  delay: 100,
-  timeout: 10000,
-})

@@ -5,42 +5,41 @@ import { Toast } from 'antd-mobile'
 import { DELAY_TIME, API_URL } from 'common'
 import { IReqOptions, IResponse } from '../interface'
 
-// NOTE: examples: see https://github.com/lawler61/react-lighter#%E5%85%ADaxios-%E5%B0%81%E8%A3%85
+// NOTE: see https://github.com/lawler61/react-lighter#%E5%85%ADaxios-%E5%B0%81%E8%A3%85
 
 const defaultOptions: AxiosRequestConfig = {
   baseURL: API_URL,
   timeout: 6000,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json;charset=utf-8', // 跨域的时候会产生 options预检
+    'Content-Type': 'application/json;charset=utf-8',
   },
 }
 
 const { CancelToken } = axios
 
+export type MethodType = 'get' | 'post' | 'put' | 'patch' | 'delete'
+
+const methods: MethodType[] = ['get', 'post', 'put', 'patch', 'delete']
+
 class Request {
-  [x: string]: any
-
   static instance: Request
-
   request: AxiosInstance
-
   cancel: Canceler
-
-  methods = ['get', 'post', 'put', 'patch', 'delete']
-
   path = ''
-
   curPath = ''
+  get: (params: IReqOptions) => Promise<any>
+  post: (params: IReqOptions) => Promise<any>
+  put: (params: IReqOptions) => Promise<any>
+  patch: (params: IReqOptions) => Promise<any>
+  delete: (params: IReqOptions) => Promise<any>
 
   constructor(public history: any, options: AxiosRequestConfig) {
     this.request = axios.create(options)
 
-    this.methods.forEach(method => {
+    methods.forEach(method => {
       this[method] = (params: IReqOptions) => this.getRequest(method, params)
     })
-
-    this.upload = (data: object, callback: (process: any) => void) => this.getUploader(data, callback)
 
     this.initInterceptors()
   }
@@ -76,8 +75,8 @@ class Request {
         return res
       },
       err => {
-        throw err
-      }
+        console.error(err)
+      },
     )
   }
 
@@ -92,20 +91,18 @@ class Request {
    * @returns {Promise<any>}
    */
   async getRequest(method: string, options: IReqOptions = { uri: '', query: null, data: {} }): Promise<any> {
-    const { uri, query, data } = options
+    const { uri, query, data = {} } = options
 
     let url = this.curPath + (uri ? `/${uri}` : '')
     url += query ? `?${qs.stringify(query)}` : ''
 
     let result: any = {}
 
-    if (data && data.cancelToken) {
-      // An executor function receives a cancel function as a parameter
-      data.cancelToken = new CancelToken(c => (this.cancel = c))
-    }
-
     try {
-      const { data: response } = await this.request[method](url, data)
+      const { data: response } = await (this.request as any)[method](
+        url,
+        Object.assign(data, data.cancel && { cancelToken: new CancelToken(c => (this.cancel = c)) }),
+      )
       // console.log(response)
       const { errcode, errmsg } = response
 
@@ -122,26 +119,23 @@ class Request {
     return result
   }
 
-  async getUploader(data: any = {}, callback: (process: any) => void): Promise<any> {
+  async upload(data: any = {}, callback: (process: any) => void): Promise<any> {
     let result: any = {}
 
-    if (data && data.cancelToken) {
-      // An executor function receives a cancel function as a parameter
-      data.cancelToken = new CancelToken(c => (this.cancel = c))
-    }
-
     try {
-      const response: IResponse = await this.request.put('/upload', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response: IResponse = await this.request.put(
+        '/upload',
+        Object.assign(data, data.cancel && { cancelToken: new CancelToken(c => (this.cancel = c)) }),
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent: any) => {
+            const { loaded, total } = progressEvent
+            callback(`${Math.round((loaded * 10000) / total) / 100}%`)
+          },
         },
-        onUploadProgress: (progressEvent: any) => {
-          const { loaded, total } = progressEvent
-
-          // callback(((loaded * 100) / total).toFixed(2))
-          callback(`${Math.round((loaded * 10000) / total) / 100}%`)
-        },
-      })
+      )
 
       const { status, data: res } = response
       const { errcode, errmsg } = res

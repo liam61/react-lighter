@@ -62,7 +62,10 @@ module.exports = ({
       filename: `${cssPath}/[name].[hash:8].css`,
     }),
     new PurgecssPlugin({
-      paths: glob.sync(purifycssFile.map(url => resolve(url)), { nodir: true }),
+      paths: glob.sync(
+        purifycssFile.map(url => resolve(url)),
+        { nodir: true },
+      ),
     }),
     new HappyPack({
       id: 'tspack', // loader 中指定的 id
@@ -110,7 +113,7 @@ module.exports = ({
       new CleanWebpackPlugin([resolve(outputDir)], {
         root: process.cwd(),
         exclude: dllFiles,
-      })
+      }),
     )
   }
 
@@ -121,7 +124,7 @@ module.exports = ({
           from: resolve(copyConfig.fromPath),
           to: resolve(copyConfig.toPath), // 找到 dist 目录下的 docs，并放进去
         },
-      ])
+      ]),
     )
   }
 
@@ -200,7 +203,6 @@ module.exports = ({
           options: assetOptions,
         },
       ],
-      // 'noParse': /jquery/
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -220,7 +222,8 @@ module.exports = ({
             maxInitialRequests: 5,
             minSize: 0,
           },
-          vendor: { // 重复引用的三方库
+          vendor: {
+            // 重复引用的三方库
             name: 'vendor',
             test: /node_modules/,
             chunks: 'initial',

@@ -5,11 +5,13 @@
 		"es6": true,
 		"node": true
 	},
+	"parser": "@typescript-eslint/parser",
 	"extends": [
-		"eslint:recommended",
+		"airbnb-base",
 		"plugin:react/recommended",
-		"airbnb",
-		"prettier"
+		"plugin:@typescript-eslint/recommended",
+		"prettier/@typescript-eslint",
+		"plugin:prettier/recommended"
 	],
 	"parserOptions": {
 		"ecmaFeatures": {
@@ -18,54 +20,36 @@
 		"ecmaVersion": 2018,
 		"sourceType": "module"
 	},
-	"parser": "babel-eslint",
 	"plugins": [
 		"import",
+		"@typescript-eslint",
 		"react",
-		"jsx-a11y",
-		"babel"
+		"prettier"
 	],
 	"rules": {
-		"linebreak-style": [
-			"error",
-			"unix"
-		],
-		"semi": [
-			"error",
-			"never"
-		],
-		"comma-dangle": [
-			"error",
-			"always-multiline"
-		],
-		"quotes": [
-			"error",
-			"single"
-		],
-		"no-unused-vars": [
-			2,
-			{
-				"args": "after-used"
-			}
-		],
-		"no-use-before-define": [
-			"error",
-			{
-				"functions": false,
-				"classes": false
-			}
-		],
-		"no-console": "off",
-		"consistent-return": "off",
-		"react/jsx-filename-extension": [
-			1,
-			{
+		"import/extensions": 0,
+		"@typescript-eslint/interface-name-prefix": 0,
+		"@typescript-eslint/explicit-function-return-type": 0,
+		"@typescript-eslint/no-use-before-define": 0,
+		"@typescript-eslint/no-non-null-assertion": 0,
+		"@typescript-eslint/camelcase": 0,
+		"@typescript-eslint/no-explicit-any": 0,
+		"@typescript-eslint/no-empty-interface": 0
+	},
+	"settings": {
+		"import/resolver": {
+			"node": {
 				"extensions": [
 					".js",
-					".jsx"
+					".jsx",
+					".ts",
+					".tsx",
+					".d.ts"
+				],
+				"paths": [
+					"./src"
 				]
 			}
-		],
-		"import/no-unresolved": "off"
+		}
 	}
 }

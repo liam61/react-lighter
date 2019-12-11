@@ -2,7 +2,8 @@ $prefixCls: 'page-404';
 
 .#{$prefixCls} {
   height: 100vh;
-  
+  overflow: hidden;
+
   h1 {
     padding-top: 500px;
     text-align: center;

@@ -1,5 +1,5 @@
-import React from 'react'
-import { autobind } from 'core-decorators';
+import React, { Component } from 'react'
+import { autobind } from 'core-decorators'
 import { Button } from 'antd-mobile'
 import './index.less'
 
@@ -8,7 +8,7 @@ interface IProps {
 }
 
 @autobind
-class Hello extends React.PureComponent<IProps> {
+export default class Example extends Component<IProps> {
   state = { count: 1 }
 
   handleClick() {
@@ -29,5 +29,3 @@ class Hello extends React.PureComponent<IProps> {
     )
   }
 }
-
-export default Hello

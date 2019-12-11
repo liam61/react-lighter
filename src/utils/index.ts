@@ -1,16 +1,17 @@
-import uid from 'uid';
-import { PREFIXCLS } from 'common';
-import request from './request';
+import { PREFIXCLS } from "common";
+import request from "./request";
 
 function getUid(len = 10) {
-  return `${PREFIXCLS}-${uid(len)}`;
+  const uid = Math.random()
+    .toString(35)
+    .slice(2, len);
+  return `${PREFIXCLS}-${uid}`;
 }
 
-// tslint:disable-next-line: no-empty
 function emptyFn() {}
 
 function getLocalDate(date: Date) {
-  return date.toLocaleString('zh', { hour12: false }).replace(/\//g, '-');
+  return date.toLocaleString("zh", { hour12: false }).replace(/\//g, "-");
 }
 
 export { getUid, emptyFn, request, getLocalDate };

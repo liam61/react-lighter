@@ -5,7 +5,7 @@ import NoMatchPage from 'pages/404'
 export interface IRoute {
   key: string
   path?: string
-  component?: React.ComponentClass | React.FunctionComponent
+  component?: React.ComponentClass<any> | React.FunctionComponent<any>
   props?: object
   exact?: boolean
   redirect?: string
