@@ -1,12 +1,6 @@
 {
   "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "useBuiltIns": "usage",
-        "corejs": 2
-      }
-    ],
+    "@babel/preset-env",
     "@babel/preset-react"
   ],
   "plugins": [
@@ -31,6 +25,13 @@
         "loose": true
       }
     ],
-    "@babel/plugin-transform-runtime"
+    [
+      "@babel/transform-runtime",
+      {
+        "corejs": 2,
+        "helpers": true,
+        "regenerator": true
+      }
+    ]
   ]
 }

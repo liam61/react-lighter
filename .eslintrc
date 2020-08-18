@@ -2,14 +2,12 @@
 	"env": {
 		"browser": true,
 		"commonjs": true,
-		"es6": true,
-		"node": true
+		"es6": true
 	},
 	"extends": [
 		"eslint:recommended",
-		"plugin:react/recommended",
-		"airbnb",
-		"prettier"
+		"plugin:prettier/recommended",
+		"plugin:react/recommended"
 	],
 	"parserOptions": {
 		"ecmaFeatures": {
@@ -18,54 +16,27 @@
 		"ecmaVersion": 2018,
 		"sourceType": "module"
 	},
-	"parser": "babel-eslint",
+	"parser": "@typescript-eslint/parser",
 	"plugins": [
-		"import",
+		"prettier",
 		"react",
-		"jsx-a11y",
-		"babel"
+		"import"
 	],
 	"rules": {
-		"linebreak-style": [
-			"error",
-			"unix"
-		],
-		"semi": [
-			"error",
-			"never"
-		],
-		"comma-dangle": [
-			"error",
-			"always-multiline"
-		],
-		"quotes": [
-			"error",
-			"single"
-		],
 		"no-unused-vars": [
-			2,
-			{
-				"args": "after-used"
-			}
-		],
-		"no-use-before-define": [
-			"error",
-			{
-				"functions": false,
-				"classes": false
-			}
-		],
-		"no-console": "off",
-		"consistent-return": "off",
-		"react/jsx-filename-extension": [
-			1,
-			{
-				"extensions": [
-					".js",
-					".jsx"
-				]
-			}
-		],
-		"import/no-unresolved": "off"
+      "warn"
+    ],
+    "no-empty": "warn",
+    "no-restricted-globals": "off",
+    "no-dupe-class-members": "off",
+    "prefer-spread": "warn",
+    "prefer-rest-params": "warn",
+    "guard-for-in": "off",
+    "require-await": "off",
+    "promise/param-names": "off",
+    "lines-between-class-members": "off",
+    "promise/no-return-wrap": "off",
+    "prefer-promise-reject-errors": "off",
+    "prettier/prettier": "warn"
 	}
 }

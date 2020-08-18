@@ -12,8 +12,6 @@
     "module": "esnext",
     "lib": [
       "es6",
-      "es7",
-      "esnext",
       "dom"
     ],
     "types": [

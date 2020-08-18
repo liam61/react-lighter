@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const os = require('os')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 // const PurifycssWebpack = require('purifycss-webpack')
@@ -30,7 +29,7 @@ module.exports = ({
 }) => {
   const env = process.env.NODE_ENV
   const isDevMode = env === 'development'
-  const dllWebpack = require(resolve(`${outputDir}/react.manifest.json`))
+  const dllWebpack = require(resolve(`${outputDir}/${dllFiles[1]}`))
   const assetOptions = {
     limit: 10000,
     name: `${assetsPath}/[name].[ext]`,
@@ -62,7 +61,10 @@ module.exports = ({
       filename: `${cssPath}/[name].[hash:8].css`,
     }),
     new PurgecssPlugin({
-      paths: glob.sync(purifycssFile.map(url => resolve(url)), { nodir: true }),
+      paths: glob.sync(
+        purifycssFile.map(url => resolve(url)),
+        { nodir: true },
+      ),
     }),
     new HappyPack({
       id: 'tspack', // loader 中指定的 id
@@ -110,18 +112,7 @@ module.exports = ({
       new CleanWebpackPlugin([resolve(outputDir)], {
         root: process.cwd(),
         exclude: dllFiles,
-      })
-    )
-  }
-
-  if (copyConfig.needsCopy) {
-    plugins.push(
-      new CopyWebpackPlugin([
-        {
-          from: resolve(copyConfig.fromPath),
-          to: resolve(copyConfig.toPath), // 找到 dist 目录下的 docs，并放进去
-        },
-      ])
+      }),
     )
   }
 
@@ -161,7 +152,11 @@ module.exports = ({
         },
         {
           test: /\.css$/,
-          use: [useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader', 'postcss-loader'],
+          use: [
+            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            'postcss-loader',
+          ],
         },
         {
           test: /\.less$/,
@@ -172,7 +167,6 @@ module.exports = ({
             {
               loader: 'less-loader',
               options: {
-                javascriptEnabled: true,
                 sourceMap: true,
               },
             },
@@ -196,7 +190,7 @@ module.exports = ({
         },
         {
           test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-          loader: 'url-loader',
+          loader: 'file-loader',
           options: assetOptions,
         },
       ],
@@ -220,7 +214,8 @@ module.exports = ({
             maxInitialRequests: 5,
             minSize: 0,
           },
-          vendor: { // 重复引用的三方库
+          // 重复引用的三方库
+          vendor: {
             name: 'vendor',
             test: /node_modules/,
             chunks: 'initial',

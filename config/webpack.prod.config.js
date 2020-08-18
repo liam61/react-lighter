@@ -1,4 +1,4 @@
-const merge = require('webpack-merge')
+const merge = require('webpack-merge').default
 const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const getBaseConfig = require('./webpack.base.config')

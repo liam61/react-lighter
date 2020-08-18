@@ -13,8 +13,8 @@ export interface IRoute {
 }
 
 const config: IRoute[] = [
-  { key: 'home', path: '/', exact: true, redirect: '/example' },
-  { key: 'example', path: '/example', component: ExamplePage },
+  { key: 'home', path: '/', exact: true, redirect: '/home' },
+  { key: 'example', path: '/home', component: ExamplePage },
   { key: '404', component: NoMatchPage },
 ]
 

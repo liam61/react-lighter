@@ -5,17 +5,17 @@ import routesConfig from './config'
 function getRoutes(routes = routesConfig) {
   return routes.map(route => {
     const { key, redirect, children, component } = route
-    const Cmp = component as any;
+    const Comp = component as any
 
     if (children) {
       return (
-        <Cmp key={key}>
+        <Comp key={key}>
           <Switch>{getRoutes(children)}</Switch>
-        </Cmp>
+        </Comp>
       )
     }
 
-    return redirect ? <Redirect key={key} to={redirect} {...route} /> : <Route key={key} {...route} />
+    return redirect ? <Redirect to={redirect} {...route} /> : <Route {...route} />
   })
 }
 

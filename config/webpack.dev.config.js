@@ -1,5 +1,5 @@
 const webpack = require('webpack')
-const merge = require('webpack-merge')
+const merge = require('webpack-merge').default
 const { resolve } = require('./utils')
 const options = require('./options')
 const getBaseConfig = require('./webpack.base.config')
