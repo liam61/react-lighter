@@ -1,5 +1,4 @@
-import { hot } from 'react-hot-loader'
-import React, { Component } from 'react'
+import React from 'react'
 import { HashRouter as Router } from 'react-router-dom'
 import { configure } from 'mobx'
 import routes from 'routes'
@@ -11,11 +10,6 @@ import 'assets/css/font-awesome.min.css'
 
 configure({ enforceActions: 'observed' })
 
-@provider
-class App extends Component {
-  render() {
-    return <Router>{routes}</Router>
-  }
-}
+const App = () => <Router>{routes}</Router>
 
-export default hot(module)(App)
+export default provider(App)

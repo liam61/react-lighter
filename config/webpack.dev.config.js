@@ -4,6 +4,7 @@ const { resolve } = require('./utils')
 const options = require('./options')
 const getBaseConfig = require('./webpack.base.config')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 function getDevConfig(opts) {
   return merge(getBaseConfig(opts), {
@@ -20,7 +21,8 @@ function getDevConfig(opts) {
       hot: true,
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
+      new ReactRefreshWebpackPlugin(),
+      // new webpack.HotModuleReplacementPlugin(),
       new webpack.NamedModulesPlugin(),
       new FriendlyErrorsPlugin(),
     ],

@@ -1,4 +1,4 @@
-import invariant from 'invariant';
+import invariant from 'invariant'
 import {
   instanceType,
   storeTypeSymbol,
@@ -7,50 +7,46 @@ import {
   singleInstanceSymbol,
   appActionKeySymbol,
   appStoreKeySymbol,
-} from './meta';
-import { defineReadOnlyProperty, firstToLowercase } from './utils';
-import AsyncManager from './zone';
+} from './meta'
+import { defineReadOnlyProperty, firstToLowercase } from './utils'
+import AsyncManager from './zone'
 
 export class App {
-  rootStore = {};
-  rootAction = {};
+  rootStore = {}
+  rootAction = {}
 
   constructor() {
-    this.asyncManager = AsyncManager.getInstance();
-    this.processStores();
-    this.processActions();
+    this.asyncManager = AsyncManager.getInstance()
+    this.processStores()
+    this.processActions()
   }
 
   processStores() {
     let scannedStores = (App[appStoreKeySymbol] || []).reduce((ret, item) => {
-      ret[item.page] = ret[item.page] || {};
-      ret[item.page][item.name] = item.target;
-      return ret;
-    }, {});
+      ret[item.page] = ret[item.page] || {}
+      ret[item.page][item.name] = item.target
+      return ret
+    }, {})
 
     //扫描的文件
     Object.keys(scannedStores).forEach(pageKey => {
-      invariant(
-        !this.rootStore[pageKey],
-        `dumplicated page or component name for ${pageKey}`
-      );
+      invariant(!this.rootStore[pageKey], `dumplicated page or component name for ${pageKey}`)
 
-      defineReadOnlyProperty(this.rootStore, pageKey, {});
+      defineReadOnlyProperty(this.rootStore, pageKey, {})
 
-      let pageStore = scannedStores[pageKey];
-      this.processPageStore(pageStore, this.rootStore[pageKey]);
-    });
-
+      let pageStore = scannedStores[pageKey]
+      this.processPageStore(pageStore, this.rootStore[pageKey])
+    })
   }
 
   processPageStore(pageStore, finalPageStore) {
     Object.keys(pageStore).forEach(storeKey => {
-      this.processSingleStore(pageStore[storeKey], storeKey, finalPageStore);
-    });
+      this.processSingleStore(pageStore[storeKey], storeKey, finalPageStore)
+    })
   }
 
   processSingleStore(storeClassOrInstance, storeKey, finalPageStore) {
-    let asyncManager = this.asyncManager;
+    let asyncManager = this.asyncManager
     if (typeof storeClassOrInstance == 'function') {
       if (
         storeClassOrInstance[storeTypeSymbol] === instanceType.singleton ||
@@ -61,96 +57,77 @@ export class App {
           enumerable: true,
           get() {
             storeClassOrInstance[singleInstanceSymbol] =
-              storeClassOrInstance[singleInstanceSymbol] ||
-              new storeClassOrInstance();
+              storeClassOrInstance[singleInstanceSymbol] || new storeClassOrInstance()
 
-            asyncManager.wrapStore(storeClassOrInstance[singleInstanceSymbol]);
+            asyncManager.wrapStore(storeClassOrInstance[singleInstanceSymbol])
 
-            return storeClassOrInstance[singleInstanceSymbol];
+            return storeClassOrInstance[singleInstanceSymbol]
           },
           set() {
-            throw Error('can not set store again');
+            throw Error('can not set store again')
           },
-        });
+        })
       } else {
-        this.processMultiInstance(storeClassOrInstance);
+        this.processMultiInstance(storeClassOrInstance)
 
         Object.defineProperty(finalPageStore, firstToLowercase(storeKey), {
           configurable: true,
           enumerable: true,
           get() {
-            return storeClassOrInstance[getInstanceFuncSymbol];
+            return storeClassOrInstance[getInstanceFuncSymbol]
           },
           set() {
-            throw Error('can not set store again');
+            throw Error('can not set store again')
           },
-        });
+        })
       }
     } else {
-      asyncManager.wrapStore(storeClassOrInstance);
-      defineReadOnlyProperty(
-        finalPageStore,
-        firstToLowercase(storeKey),
-        storeClassOrInstance
-      );
+      asyncManager.wrapStore(storeClassOrInstance)
+      defineReadOnlyProperty(finalPageStore, firstToLowercase(storeKey), storeClassOrInstance)
     }
   }
 
   processMultiInstance(storeClassOrInstance) {
-    let asyncManager = this.asyncManager;
+    let asyncManager = this.asyncManager
 
-    storeClassOrInstance[storeInstanceSymbol] =
-      storeClassOrInstance[storeInstanceSymbol] || {};
+    storeClassOrInstance[storeInstanceSymbol] = storeClassOrInstance[storeInstanceSymbol] || {}
 
     storeClassOrInstance[getInstanceFuncSymbol] =
       storeClassOrInstance[getInstanceFuncSymbol] ||
-      function(uniqueKey) {
+      function (uniqueKey) {
         storeClassOrInstance[storeInstanceSymbol][uniqueKey] =
-          storeClassOrInstance[storeInstanceSymbol][uniqueKey] ||
-          new storeClassOrInstance();
+          storeClassOrInstance[storeInstanceSymbol][uniqueKey] || new storeClassOrInstance()
 
-        asyncManager.wrapStore(
-          storeClassOrInstance[storeInstanceSymbol][uniqueKey]
-        );
+        asyncManager.wrapStore(storeClassOrInstance[storeInstanceSymbol][uniqueKey])
 
-        return storeClassOrInstance[storeInstanceSymbol][uniqueKey];
-      };
+        return storeClassOrInstance[storeInstanceSymbol][uniqueKey]
+      }
   }
 
   processActions() {
     let scannedActions = (App[appActionKeySymbol] || []).reduce((ret, item) => {
-      ret[item.page] = ret[item.page] || {};
-      ret[item.page][item.name] = item.target;
-      return ret;
-    }, {});
+      ret[item.page] = ret[item.page] || {}
+      ret[item.page][item.name] = item.target
+      return ret
+    }, {})
 
     Object.keys(scannedActions).forEach(pageKey => {
-      defineReadOnlyProperty(this.rootAction, pageKey, {});
+      defineReadOnlyProperty(this.rootAction, pageKey, {})
 
-      let pageAction = scannedActions[pageKey];
-      let pageStore = this.rootStore[pageKey];
-      this.processPageAction(pageAction, this.rootAction[pageKey], pageStore);
-    });
+      let pageAction = scannedActions[pageKey]
+      let pageStore = this.rootStore[pageKey]
+      this.processPageAction(pageAction, this.rootAction[pageKey], pageStore)
+    })
   }
 
   processPageAction(pageAction, finalPageAction, pageStore) {
     Object.keys(pageAction).forEach(actionKey => {
-      this.processSingleAction(
-        pageAction[actionKey],
-        actionKey,
-        finalPageAction,
-        pageStore
-      );
-    });
+      this.processSingleAction(pageAction[actionKey], actionKey, finalPageAction, pageStore)
+    })
   }
 
-  processSingleAction(
-    actionClassOrInstance,
-    actionKey,
-    finalPageAction,
-    pageStore
-  ) {
-    let asyncManager = this.asyncManager;
+  processSingleAction(actionClassOrInstance, actionKey, finalPageAction, pageStore) {
+    let asyncManager = this.asyncManager
 
     if (typeof actionClassOrInstance == 'function') {
       Object.defineProperty(finalPageAction, firstToLowercase(actionKey), {
@@ -159,36 +136,27 @@ export class App {
         get() {
           actionClassOrInstance[singleInstanceSymbol] =
             actionClassOrInstance[singleInstanceSymbol] ||
-            new actionClassOrInstance(
-              pageStore,
-              finalPageAction,
-              this.rootStore,
-              this.rootAction
-            );
+            new actionClassOrInstance(pageStore, finalPageAction, this.rootStore, this.rootAction)
 
-          asyncManager.wrapAction(actionClassOrInstance[singleInstanceSymbol]);
+          asyncManager.wrapAction(actionClassOrInstance[singleInstanceSymbol])
 
-          return actionClassOrInstance[singleInstanceSymbol];
+          return actionClassOrInstance[singleInstanceSymbol]
         },
         set() {
-          throw Error('can not set action again');
+          throw Error('can not set action again')
         },
-      });
+      })
     } else {
-      asyncManager.wrapAction(actionClassOrInstance);
+      asyncManager.wrapAction(actionClassOrInstance)
 
-      defineReadOnlyProperty(
-        finalPageAction,
-        firstToLowercase(actionKey),
-        actionClassOrInstance
-      );
+      defineReadOnlyProperty(finalPageAction, firstToLowercase(actionKey), actionClassOrInstance)
     }
   }
 }
 
-let app = null;
+let app = null
 
 export function createApp() {
-  app = app || new App();
-  return app;
+  app = app || new App()
+  return app
 }

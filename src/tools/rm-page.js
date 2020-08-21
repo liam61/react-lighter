@@ -14,8 +14,8 @@ let { basePath } = packageJson
 if (!basePath) {
   console.log(
     `you should set the key ${Chalk.red('basePath')} in your ${Chalk.green(
-      'package.json'
-    )} file. For example, ${Chalk.red('"basePath":"./src"')}`
+      'package.json',
+    )} file. For example, ${Chalk.red('"basePath":"./src"')}`,
   )
   return
 }
@@ -25,32 +25,26 @@ program
   .option('[<path>]  ', 'the path of page or component to remove')
   .option(
     '-c, --component',
-    `will remove files from ${Chalk.greenBright(
-      Path.join(basePath, 'components')
-    )} directory`
+    `will remove files from ${Chalk.greenBright(Path.join(basePath, 'components'))} directory`,
   )
 
 program.on('--help', () => {
   console.log(
-    '  This is a quick tool to remove a page or component.  \n  It will remove index.tsx,index.scss file and stores and actions \n'
+    '  This is a quick tool to remove a page or component.  \n  It will remove index.tsx,index.scss file and stores and actions \n',
   )
   console.log('')
   console.log('  Examples:')
   console.log('')
-  console.log(
-    `    $ node tools/rm-page.js offerList        ${Chalk.grey(
-      '// remove a page'
-    )}`
-  )
+  console.log(`    $ node tools/rm-page.js offerList        ${Chalk.grey('// remove a page')}`)
   console.log(
     `    $ node tools/rm-page.js offerList -c        ${Chalk.grey(
-      '// remove a component for common'
-    )}`
+      '// remove a component for common',
+    )}`,
   )
   console.log(
     `    $ node tools/rm-page.js offerList/tableList        ${Chalk.grey(
-      '// remove a component inner page offerList'
-    )}`
+      '// remove a component inner page offerList',
+    )}`,
   )
   console.log('')
 })
@@ -75,29 +69,21 @@ const fileDirectoryName = splitPath[splitPath.length - 1] // 页面内最深层�
 const pagePath = Path.join(process.cwd(), basePath, pageOrComPath)
 const rootPagePath = Path.join(process.cwd(), basePath, rootPageName)
 
-const storeName = `${rootPagePath}/stores/${fisrtToLowercase(
-  fileDirectoryName
-)}Store.ts`
-const actionName = `${rootPagePath}/actions/${fisrtToLowercase(
-  fileDirectoryName
-)}Action.ts`
+const storeName = `${rootPagePath}/stores/${fisrtToLowercase(fileDirectoryName)}Store.ts`
+const actionName = `${rootPagePath}/actions/${fisrtToLowercase(fileDirectoryName)}Action.ts`
 
 removeFileOrDirectory(pagePath)
 removeFileOrDirectory(storeName)
 removeFileOrDirectory(actionName)
 
-ChildProcess.execFile(
-  'node',
-  [Path.join(__dirname, './sync-mobx.js')],
-  (error, stdout, stderr) => {
-    if (error) {
-      console.error('stderr', stderr)
-      throw error
-    }
-
-    console.log(Chalk.cyan(stdout))
+ChildProcess.execFile('node', [Path.join(__dirname, './sync-mobx.js')], (error, stdout, stderr) => {
+  if (error) {
+    console.error('stderr', stderr)
+    throw error
   }
-)
+
+  console.log(Chalk.cyan(stdout))
+})
 
 /**
  * 创建文件

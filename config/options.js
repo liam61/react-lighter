@@ -1,4 +1,4 @@
-const { name, author } = require('../package.json')
+const { name } = require('../package.json')
 
 const entryDir = 'src'
 const outputDir = 'dist'
@@ -8,7 +8,6 @@ const baseOptions = {
   entryFile: `${entryDir}/index.tsx`,
   templateFile: `${entryDir}/index.tmpl.html`,
   templateTitle: name,
-  author,
   cssPath: 'styles',
   purifycssFile: [`${entryDir}/*.html`, `${entryDir}/**/*.js`],
   assetsPath: 'assets',

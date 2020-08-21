@@ -7,10 +7,7 @@ const packageJson = FS.readJSONSync(Path.join(process.cwd(), 'package.json'), {
   encoding: 'utf-8',
 })
 const { basePath } = packageJson
-const storesPath = listFile(
-  basePath,
-  /(.+\/)*(stores|globalStores)\/(.+)\.(t|j)s$/g
-)
+const storesPath = listFile(basePath, /(.+\/)*(stores|globalStores)\/(.+)\.(t|j)s$/g)
 const actionsPath = listFile(basePath, /(.+\/)*actions\/(.+)\.(t|j)s$/g)
 const mobxDependencePath = Path.join(process.cwd(), basePath) // ./src
 const mobxTypingsPath = Path.join(process.cwd(), basePath, 'typings') // ./src/typings
@@ -35,7 +32,7 @@ function createTypingsFile() {
     '}'
 
   const mobxReactModuleDeclare =
-    'declare module \'mobx-react\' {' +
+    "declare module 'mobx-react' {" +
     '\n' +
     '  export type IValueMapSelf = IStoresToProps<IInject>' +
     '\n\n' +
@@ -116,8 +113,7 @@ function createDependenceImportContent(base) {
 }
 
 function createTypingsImportContent(base) {
-  let content =
-    'import { IStoresToProps, IReactComponent, IWrappedComponent } from \'mobx-react\'\n'
+  let content = "import { IStoresToProps, IReactComponent, IWrappedComponent } from 'mobx-react'\n"
   content += storesPath.concat(actionsPath).reduce((content, path) => {
     const pathArr = getFileNameFrom(path)
     // console.log(path, pathArr)
@@ -127,7 +123,7 @@ function createTypingsImportContent(base) {
     }
     relativePath = removeExt(relativePath)
     const importConent = `import ${pathArr[0]}${firstToUppercase(
-      pathArr[1]
+      pathArr[1],
     )} from '${relativePath}'`
 
     content += importConent

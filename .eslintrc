@@ -23,20 +23,19 @@
 		"import"
 	],
 	"rules": {
-		"no-unused-vars": [
-      "warn"
-    ],
-    "no-empty": "warn",
-    "no-restricted-globals": "off",
-    "no-dupe-class-members": "off",
-    "prefer-spread": "warn",
-    "prefer-rest-params": "warn",
-    "guard-for-in": "off",
-    "require-await": "off",
-    "promise/param-names": "off",
-    "lines-between-class-members": "off",
-    "promise/no-return-wrap": "off",
-    "prefer-promise-reject-errors": "off",
-    "prettier/prettier": "warn"
+		"no-unused-vars": "warn",
+		"no-empty": "warn",
+		"no-restricted-globals": "off",
+		"no-dupe-class-members": "off",
+		"no-undef": "warn",
+		"prefer-spread": "warn",
+		"prefer-rest-params": "warn",
+		"guard-for-in": "off",
+		"require-await": "off",
+		"promise/param-names": "off",
+		"lines-between-class-members": "off",
+		"promise/no-return-wrap": "off",
+		"prefer-promise-reject-errors": "off",
+		"prettier/prettier": "warn"
 	}
 }

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ComponentClass, FunctionComponent } from 'react'
 import ExamplePage from 'pages/Example/Loadable'
 import NoMatchPage from 'pages/404'
 
 export interface IRoute {
   key: string
   path?: string
-  component?: React.ComponentClass | React.FunctionComponent
+  component?: ComponentClass | FunctionComponent
   props?: object
   exact?: boolean
   redirect?: string

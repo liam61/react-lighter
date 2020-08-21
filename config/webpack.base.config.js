@@ -19,16 +19,14 @@ module.exports = ({
   outputDir,
   templateFile,
   templateTitle,
-  // author,
   cssPath,
   purifycssFile,
   useCssExtract,
   assetsPath,
-  copyConfig,
   dllFiles,
 }) => {
   const env = process.env.NODE_ENV
-  const isDevMode = env === 'development'
+  const isDev = env === 'development'
   const dllWebpack = require(resolve(`${outputDir}/${dllFiles[1]}`))
   const assetOptions = {
     limit: 10000,
@@ -41,7 +39,7 @@ module.exports = ({
       template: resolve(templateFile),
       filename: 'index.html',
       title: templateTitle,
-      minify: isDevMode
+      minify: isDev
         ? null
         : {
             removeAttributeQuotes: true,
@@ -67,14 +65,18 @@ module.exports = ({
       ),
     }),
     new HappyPack({
-      id: 'tspack', // loader 中指定的 id
-      loaders: ['babel-loader?cacheDirectory'], // 实际匹配处理的 loader
-      threadPool: happyThreadPool,
-      verbose: true,
-    }),
-    new HappyPack({
+      // loader 中指定的 id
       id: 'jspack',
-      loaders: ['babel-loader?cacheDirectory'],
+      // 实际匹配处理的 loader
+      loaders: [
+        {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            plugins: ['react-refresh/babel'].filter(Boolean),
+          },
+        },
+      ],
       threadPool: happyThreadPool,
       verbose: true,
     }),
@@ -105,16 +107,12 @@ module.exports = ({
       threadPool: happyThreadPool,
       verbose: true,
     }),
-  ]
-
-  if (!isDevMode) {
-    plugins.push(
+    !isDev &&
       new CleanWebpackPlugin([resolve(outputDir)], {
         root: process.cwd(),
         exclude: dllFiles,
       }),
-    )
-  }
+  ]
 
   const baseConfig = {
     entry: resolve(entryFile),
@@ -123,7 +121,7 @@ module.exports = ({
       path: resolve(outputDir),
     },
     mode: env,
-    devtool: isDevMode ? 'cheap-module-eval-source-map' : 'cheap-module-source-map',
+    devtool: isDev ? 'cheap-module-eval-source-map' : 'cheap-module-source-map',
     module: {
       rules: [
         {
@@ -135,7 +133,7 @@ module.exports = ({
         {
           test: /\.(ts|tsx)$/,
           use: [
-            'happypack/loader?id=tspack',
+            'happypack/loader?id=jspack',
             {
               loader: 'awesome-typescript-loader',
               options: {
@@ -236,5 +234,5 @@ module.exports = ({
     },
   }
 
-  return Object.assign(baseConfig, { plugins })
+  return Object.assign(baseConfig, { plugins: plugins.filter(Boolean) })
 }

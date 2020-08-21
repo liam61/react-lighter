@@ -1,7 +1,5 @@
 import React from 'react'
 import { render } from 'react-dom'
-import AppHot from './App'
+import App from './App'
 
-const root = document.getElementById('root')
-
-render(<AppHot />, root)
+render(<App />, document.getElementById('root'))

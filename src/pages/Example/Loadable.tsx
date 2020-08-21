@@ -4,7 +4,7 @@ const Page = lazy(() => import(/* webpackChunkName: "example" */ './index'))
 
 const Loadable = () => {
   return (
-    <Suspense fallback={<h2>loading...</h2>}>
+    <Suspense fallback={<h1>loading...</h1>}>
       <Page />
     </Suspense>
   )

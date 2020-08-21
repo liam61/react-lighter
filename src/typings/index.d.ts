@@ -23,6 +23,6 @@ declare module 'mobx-react' {
   export type IValueMapSelf = IStoresToProps<IInject>
 
   export function inject<S extends IInject, P, I, C>(
-    fn: IStoresToProps<S, P, I, C>
+    fn: IStoresToProps<S, P, I, C>,
   ): <T extends IReactComponent>(target: T) => T & IWrappedComponent<P>
 }

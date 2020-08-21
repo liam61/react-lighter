@@ -12,8 +12,8 @@ let { basePath } = packageJson
 if (!basePath) {
   console.log(
     `you should set the key ${Chalk.red('basePath')} in your ${Chalk.green(
-      'package.json'
-    )} file. For example, ${Chalk.red('"basePath":"./src"')}`
+      'package.json',
+    )} file. For example, ${Chalk.red('"basePath":"./src"')}`,
   )
   return
 }
@@ -24,37 +24,33 @@ program
   .option('-m, --mobx', 'create store and action')
   .option(
     '-c, --component',
-    `will create files to ${Chalk.greenBright(
-      Path.join(basePath, 'components')
-    )} directory`
+    `will create files to ${Chalk.greenBright(Path.join(basePath, 'components'))} directory`,
   )
 
 program.on('--help', () => {
   console.log(
-    '  This is a quick tool to create a page.\n  It can create index.tsx, index.scss file and add <-m> or <--mobx> param can create stores and actions.\n'
+    '  This is a quick tool to create a page.\n  It can create index.tsx, index.scss file and add <-m> or <--mobx> param can create stores and actions.\n',
   )
   console.log('')
   console.log('  Examples:')
   console.log('')
   console.log(
-    `    $ node tools/add-page.js offerList${Chalk.grey(
-      '              // create a page'
-    )}`
+    `    $ node tools/add-page.js offerList${Chalk.grey('              // create a page')}`,
   )
   console.log(
     `    $ node tools/add-page.js offerList -c${Chalk.grey(
-      '           // create a component for common'
-    )}`
+      '           // create a component for common',
+    )}`,
   )
   console.log(
     `    $ node tools/add-page.js offerList/tableList${Chalk.grey(
-      '    // create a component inner page offerList'
-    )}`
+      '    // create a component inner page offerList',
+    )}`,
   )
   console.log(
     `    $ node tools/add-page.js offerList -m${Chalk.grey(
-      '           // create a page with stores and actions'
-    )}`
+      '           // create a page with stores and actions',
+    )}`,
   )
   console.log('')
 })
@@ -72,10 +68,7 @@ if (program.component) {
   basePath = Path.join(basePath, 'pages')
 }
 
-let componentTpl = FS.readFileSync(
-  `${__dirname}/templates/index.tsx.tpl`,
-  'utf-8'
-)
+let componentTpl = FS.readFileSync(`${__dirname}/templates/index.tsx.tpl`, 'utf-8')
 let scssTpl = FS.readFileSync(`${__dirname}/templates/index.scss.tpl`, 'utf-8')
 
 const splitPath = pageOrComPath.split('/').filter(Boolean)
@@ -102,24 +95,14 @@ createFile(`${pagePath}/index.tsx`, componentTpl)
 createFile(`${pagePath}/index.scss`, scssTpl)
 
 if (program.mobx) {
-  let storeTpl = FS.readFileSync(
-    `${__dirname}/templates/stores/store.ts.tpl`,
-    'utf-8'
-  )
-  let actionTpl = FS.readFileSync(
-    `${__dirname}/templates/actions/action.ts.tpl`,
-    'utf-8'
-  )
+  let storeTpl = FS.readFileSync(`${__dirname}/templates/stores/store.ts.tpl`, 'utf-8')
+  let actionTpl = FS.readFileSync(`${__dirname}/templates/actions/action.ts.tpl`, 'utf-8')
 
   storeTpl = replaceVarible(storeTpl)
   actionTpl = replaceVarible(actionTpl)
 
-  const storeName = `${rootPagePath}/stores/${fisrtToLowercase(
-    fileDirectoryName
-  )}Store.ts`
-  const actionName = `${rootPagePath}/actions/${fisrtToLowercase(
-    fileDirectoryName
-  )}Action.ts`
+  const storeName = `${rootPagePath}/stores/${fisrtToLowercase(fileDirectoryName)}Store.ts`
+  const actionName = `${rootPagePath}/actions/${fisrtToLowercase(fileDirectoryName)}Action.ts`
   createFile(storeName, storeTpl)
   createFile(actionName, actionTpl)
 
@@ -132,7 +115,7 @@ if (program.mobx) {
         throw error
       }
       console.log(Chalk.cyan(stdout))
-    }
+    },
   )
 }
 
@@ -160,16 +143,10 @@ function replaceVarible(tpl) {
 
 function toSplitDash(str) {
   const upperCaseRegex = /[A-Z]+(?=[A-Z][a-z]|$)|[A-Z]/g
-  str = str
-    .split('/')
-    .filter(Boolean)
-    .join('/')
+  str = str.split('/').filter(Boolean).join('/')
   // str = str.replace(/\//g, (m, index) => (index ? '_' : ''))
   str = str.replace(/\//g, '')
-  return str.replace(
-    upperCaseRegex,
-    (m, index) => (index ? '-' : '') + m.toLowerCase()
-  )
+  return str.replace(upperCaseRegex, (m, index) => (index ? '-' : '') + m.toLowerCase())
 }
 
 function fisrtToLowercase(str) {

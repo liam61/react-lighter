@@ -40,7 +40,8 @@ class Request {
       this[method] = (params: IReqOptions) => this.getRequest(method, params)
     })
 
-    this.upload = (data: object, callback: (process: any) => void) => this.getUploader(data, callback)
+    this.upload = (data: object, callback: (process: any) => void) =>
+      this.getUploader(data, callback)
 
     this.initInterceptors()
   }
@@ -77,7 +78,7 @@ class Request {
       },
       err => {
         throw err
-      }
+      },
     )
   }
 
@@ -91,7 +92,10 @@ class Request {
    * @param {Object} [options.data=null] POST/PUT/PATCH 数据
    * @returns {Promise<any>}
    */
-  async getRequest(method: string, options: IReqOptions = { uri: '', query: null, data: {} }): Promise<any> {
+  async getRequest(
+    method: string,
+    options: IReqOptions = { uri: '', query: null, data: {} },
+  ): Promise<any> {
     const { uri, query, data } = options
 
     let url = this.curPath + (uri ? `/${uri}` : '')

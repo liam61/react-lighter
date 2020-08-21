@@ -3,7 +3,7 @@
 const ts = require('typescript')
 
 const defaultOptions = {
-  bindings: ['mStore', 'mAction']
+  bindings: ['mStore', 'mAction'],
 }
 
 const createTransformer = (options = defaultOptions) => {
@@ -25,18 +25,15 @@ const createTransformer = (options = defaultOptions) => {
             importChild.namedBindings &&
             ts.isNamedImports(importChild.namedBindings)
           ) {
-            importChild.namedBindings.elements.forEach(
-              ({ propertyName, name }) => {
-                // import {mStore as otherName} from './store.js'
-                const lib = node.moduleSpecifier.text // './store.js' 暂时没用到
-                const namedBinding =
-                  (propertyName && propertyName.getText()) || name.getText() // mStore
-                const aliasBinding = propertyName && name.getText() //otherName
-                if (options.bindings.indexOf(namedBinding) > -1) {
-                  bindings.push(aliasBinding || namedBinding)
-                }
+            importChild.namedBindings.elements.forEach(({ propertyName, name }) => {
+              // import {mStore as otherName} from './store.js'
+              const lib = node.moduleSpecifier.text // './store.js' 暂时没用到
+              const namedBinding = (propertyName && propertyName.getText()) || name.getText() // mStore
+              const aliasBinding = propertyName && name.getText() //otherName
+              if (options.bindings.indexOf(namedBinding) > -1) {
+                bindings.push(aliasBinding || namedBinding)
               }
-            )
+            })
           }
         })
 
@@ -46,22 +43,19 @@ const createTransformer = (options = defaultOptions) => {
       if (node.decorators) {
         node.decorators.forEach(decorator => {
           const { expression } = decorator
-          if (
-            ts.isIdentifier(expression) &&
-            bindings.indexOf(expression.getText()) > -1
-          ) {
+          if (ts.isIdentifier(expression) && bindings.indexOf(expression.getText()) > -1) {
             // 调用形式 @mStore  @mAction
             decorator.expression = ts.createCall(expression, undefined, [
               ts.createObjectLiteral([
                 ts.createPropertyAssignment(
                   ts.createLiteral('page'),
-                  ts.createLiteral(`${pageName}`)
+                  ts.createLiteral(`${pageName}`),
                 ),
                 ts.createPropertyAssignment(
                   ts.createLiteral('name'),
-                  ts.createLiteral(`${fileName}`)
-                )
-              ])
+                  ts.createLiteral(`${fileName}`),
+                ),
+              ]),
             ])
           } else if (
             ts.isCallExpression(expression) &&
@@ -71,24 +65,20 @@ const createTransformer = (options = defaultOptions) => {
             // 调用形式 @mStore({...someProps})  @mAction({...someProps})
             let arg0 = expression.arguments[0]
             if (ts.isObjectLiteralExpression(arg0)) {
-              decorator.expression = ts.createCall(
-                expression.expression,
-                undefined,
-                [
-                  ts.createObjectLiteral([
-                    ts.createPropertyAssignment(
-                      ts.createLiteral('page'),
-                      ts.createLiteral(`${pageName}`)
-                    ),
-                    ts.createPropertyAssignment(
-                      ts.createLiteral('name'),
-                      ts.createLiteral(`${fileName}`)
-                    ),
-                    ...arg0.properties
-                  ]),
-                  ...expression.arguments.slice(1)
-                ]
-              )
+              decorator.expression = ts.createCall(expression.expression, undefined, [
+                ts.createObjectLiteral([
+                  ts.createPropertyAssignment(
+                    ts.createLiteral('page'),
+                    ts.createLiteral(`${pageName}`),
+                  ),
+                  ts.createPropertyAssignment(
+                    ts.createLiteral('name'),
+                    ts.createLiteral(`${fileName}`),
+                  ),
+                  ...arg0.properties,
+                ]),
+                ...expression.arguments.slice(1),
+              ])
             }
           }
         })
