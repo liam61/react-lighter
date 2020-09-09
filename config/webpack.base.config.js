@@ -33,6 +33,11 @@ module.exports = ({
     name: `${assetsPath}/[name].[ext]`,
     publicPath: '../',
   }
+  const cssLoaders = [
+    useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
+    'css-loader',
+    'postcss-loader',
+  ]
 
   const plugins = [
     new HtmlWebpackPlugin({
@@ -68,44 +73,21 @@ module.exports = ({
       // loader 中指定的 id
       id: 'jspack',
       // 实际匹配处理的 loader
-      loaders: [
-        {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-            plugins: ['react-refresh/babel'].filter(Boolean),
-          },
-        },
-      ],
+      loaders: ['babel-loader?cacheDirectory'],
       threadPool: happyThreadPool,
-      verbose: true,
     }),
     new HappyPack({
       id: 'csspack',
       use: [
-        useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
-        'css-loader',
-        'postcss-loader',
+        ...cssLoaders,
         {
-          loader: 'sass-loader',
-          options: {
-            sassOptions: {
-              javascriptEnabled: true,
-              includePaths: [resolve(entryDir, 'common')],
-              sourceMap: true,
-            },
-          },
-        },
-        {
-          loader: 'sass-resources-loader', // 全局共用 scss 样式
+          loader: 'less-loader',
           options: {
             sourceMap: true,
-            resources: resolve(entryDir, 'assets/css/global_vars.scss'),
           },
         },
       ],
       threadPool: happyThreadPool,
-      verbose: true,
     }),
     !isDev &&
       new CleanWebpackPlugin([resolve(outputDir)], {
@@ -127,7 +109,6 @@ module.exports = ({
         {
           test: /\.(js|jsx)$/,
           loader: 'happypack/loader?id=jspack',
-          include: resolve(entryDir),
           exclude: /node_modules/,
         },
         {
@@ -135,7 +116,7 @@ module.exports = ({
           use: [
             'happypack/loader?id=jspack',
             {
-              loader: 'awesome-typescript-loader',
+              loader: 'ts-loader',
               options: {
                 transpileOnly: true,
                 experimentalWatchApi: true,
@@ -145,34 +126,26 @@ module.exports = ({
               },
             },
           ],
-          include: resolve(entryDir),
           exclude: /node_modules/,
         },
         {
-          test: /\.css$/,
-          use: [
-            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
-            'css-loader',
-            'postcss-loader',
-          ],
-        },
-        {
-          test: /\.less$/,
-          use: [
-            useCssExtract ? MiniCssExtractPlugin.loader : 'style-loader',
-            'css-loader',
-            'postcss-loader',
-            {
-              loader: 'less-loader',
-              options: {
-                sourceMap: true,
-              },
-            },
-          ],
+          test: /\.(css|less)$/,
+          loader: 'happypack/loader?id=csspack',
         },
         {
           test: /\.scss$/,
-          loader: 'happypack/loader?id=csspack',
+          use: [
+            ...cssLoaders,
+            {
+              loader: 'sass-loader',
+              options: {
+                sassOptions: {
+                  javascriptEnabled: true,
+                  sourceMap: true,
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
@@ -192,7 +165,6 @@ module.exports = ({
           options: assetOptions,
         },
       ],
-      // 'noParse': /jquery/
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -220,17 +192,9 @@ module.exports = ({
             priority: 10,
             enforce: true,
           },
-          styles: {
-            name: 'styles',
-            test: /\.css$/,
-            chunks: 'all',
-            enforce: true,
-          },
         },
       },
-      runtimeChunk: {
-        name: 'runtime',
-      },
+      runtimeChunk: true,
     },
   }
 

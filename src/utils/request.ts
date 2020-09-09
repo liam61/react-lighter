@@ -40,9 +40,6 @@ class Request {
       this[method] = (params: IReqOptions) => this.getRequest(method, params)
     })
 
-    this.upload = (data: object, callback: (process: any) => void) =>
-      this.getUploader(data, callback)
-
     this.initInterceptors()
   }
 
@@ -120,43 +117,6 @@ class Request {
       }
     } catch (err) {
       Toast.fail(err.message, DELAY_TIME)
-      console.error(err)
-    }
-
-    return result
-  }
-
-  async getUploader(data: any = {}, callback: (process: any) => void): Promise<any> {
-    let result: any = {}
-
-    if (data && data.cancelToken) {
-      // An executor function receives a cancel function as a parameter
-      data.cancelToken = new CancelToken(c => (this.cancel = c))
-    }
-
-    try {
-      const response: IResponse = await this.request.put('/upload', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent: any) => {
-          const { loaded, total } = progressEvent
-
-          // callback(((loaded * 100) / total).toFixed(2))
-          callback(`${Math.round((loaded * 10000) / total) / 100}%`)
-        },
-      })
-
-      const { status, data: res } = response
-      const { errcode, errmsg } = res
-
-      if (status === 200 && !errcode) {
-        result = res
-      } else {
-        throw new Error(`${errcode}: ${errmsg}`)
-      }
-    } catch (err) {
-      Toast.fail(err.toString(), DELAY_TIME)
       console.error(err)
     }
 

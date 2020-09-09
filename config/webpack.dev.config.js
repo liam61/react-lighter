@@ -3,7 +3,6 @@ const merge = require('webpack-merge').default
 const { resolve } = require('./utils')
 const options = require('./options')
 const getBaseConfig = require('./webpack.base.config')
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 function getDevConfig(opts) {
@@ -14,18 +13,13 @@ function getDevConfig(opts) {
       compress: true,
       historyApiFallback: true, // 不跳转
       host: '0.0.0.0',
-      port: 3000,
+      port: 4000,
       inline: true,
       quiet: true, // 让 FriendlyErrorsWebpackPlugin 取而代之
-      open: true,
       hot: true,
+      // open: true,
     },
-    plugins: [
-      new ReactRefreshWebpackPlugin(),
-      // new webpack.HotModuleReplacementPlugin(),
-      new webpack.NamedModulesPlugin(),
-      new FriendlyErrorsPlugin(),
-    ],
+    plugins: [new ReactRefreshWebpackPlugin(), new webpack.NamedModulesPlugin()],
   })
 }
 

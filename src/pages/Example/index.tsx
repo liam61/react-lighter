@@ -37,7 +37,7 @@ export default class Example extends React.Component<IProps, {}> {
         {loading ? (
           <h1 className='loading'>loading...</h1>
         ) : (
-          <ul className='qa-border-1px'>
+          <ul>
             <li>{name}</li>
             <li>{desc}</li>
           </ul>

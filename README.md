@@ -43,7 +43,7 @@ yarn build && yarn server // for prod
 
 ### 一、热加载
 
-采用 [react-hot-loader](https://github.com/gaearon/react-hot-loader) 配合 babel，可实现样式替换、节点改变不影响 state 等功能，达到局部热加载的效果
+采用 [react-refresh-webpack-plugin](https://github.com/pmmmwh/react-refresh-webpack-plugin) 配合 babel，可实现样式替换、节点改变不影响 state 等功能，达到局部热加载的效果
 
 ### 二、抽离 dll
 
@@ -98,16 +98,15 @@ yarn build && yarn server // for prod
 > node src/tools/add-page.js -m APage/AInnerPage
 >
 > 删除界面
-> node src/tools/rm-page.js -m APage/AInnerPage
+> node src/tools/rm-page.js APage/AInnerPage
 >
 > 添加组件
 > node src/tools/add-page.js -c ACom
+>
+> 删除组件
+> node src/tools/rm-page.js -c ACom
 
 ### 六、Axios 封装
-
-参考：
-
-- [axios restful 封装](https://github.com/zhaotoday/rest)
 
 将 axios 进行 restful 风格的封装，配合 interceptor 和 history 进行权限验证和跳转
 
