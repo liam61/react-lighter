@@ -73,7 +73,15 @@ module.exports = ({
       // loader 中指定的 id
       id: 'jspack',
       // 实际匹配处理的 loader
-      loaders: ['babel-loader?cacheDirectory'],
+      loaders: [
+        {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            plugins: isDev ? ['react-refresh/babel'] : [],
+          },
+        },
+      ],
       threadPool: happyThreadPool,
     }),
     new HappyPack({
@@ -159,11 +167,6 @@ module.exports = ({
           loader: 'url-loader',
           options: assetOptions,
         },
-        {
-          test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-          loader: 'file-loader',
-          options: assetOptions,
-        },
       ],
     },
     resolve: {
@@ -195,6 +198,7 @@ module.exports = ({
         },
       },
       runtimeChunk: true,
+      namedModules: true,
     },
   }
 

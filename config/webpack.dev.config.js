@@ -1,9 +1,8 @@
-const webpack = require('webpack')
 const merge = require('webpack-merge').default
 const { resolve } = require('./utils')
 const options = require('./options')
 const getBaseConfig = require('./webpack.base.config')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const RefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
 function getDevConfig(opts) {
   return merge(getBaseConfig(opts), {
@@ -12,14 +11,13 @@ function getDevConfig(opts) {
       disableHostCheck: true,
       compress: true,
       historyApiFallback: true, // 不跳转
-      host: '0.0.0.0',
-      port: 4000,
-      inline: true,
-      quiet: true, // 让 FriendlyErrorsWebpackPlugin 取而代之
+      // host: '0.0.0.0',
       hot: true,
-      // open: true,
+      port: 4000,
+      quiet: true, // 让 ReactRefreshWebpackPlugin 取而代之
+      open: true,
     },
-    plugins: [new ReactRefreshWebpackPlugin(), new webpack.NamedModulesPlugin()],
+    plugins: [new RefreshWebpackPlugin()],
   })
 }
 

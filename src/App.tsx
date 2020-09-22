@@ -6,10 +6,7 @@ import { provider } from './mobx/provider'
 import './mobxDependence'
 
 import 'assets/css/global.scss'
-import 'assets/css/font-awesome.min.css'
 
 configure({ enforceActions: 'observed' })
 
-const App = () => <Router>{routes}</Router>
-
-export default provider(App)
+export default provider(() => <Router>{routes}</Router>)

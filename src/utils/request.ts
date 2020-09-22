@@ -3,7 +3,7 @@ import qs from 'qs'
 import { createBrowserHistory } from 'history'
 import { Toast } from 'antd-mobile'
 import { DELAY_TIME, API_URL } from 'common'
-import { IReqOptions, IResponse } from '../interface'
+import { IReqOptions } from '../interface'
 
 // NOTE: examples: see https://github.com/lawler61/react-lighter#%E5%85%ADaxios-%E5%B0%81%E8%A3%85
 

@@ -32,7 +32,7 @@ export default class Example extends React.Component<IProps, {}> {
       <div className={prefixCls}>
         <h1>this is Example page</h1>
         <ExampleCom name='lawler' />
-        <img src={successIcon} width='100' alt='successIcon' />
+        <img src={successIcon} width='30' alt='successIcon' />
         <h2>当前产品</h2>
         {loading ? (
           <h1 className='loading'>loading...</h1>
@@ -44,7 +44,6 @@ export default class Example extends React.Component<IProps, {}> {
         )}
         <Button type='primary' onClick={this.handleLoadGoods} disabled={loading}>
           换一个
-          <i className='fa fa-angle-right fa-2x icon-right' aria-hidden='true' />
         </Button>
       </div>
     )
